@@ -15,5 +15,9 @@ abstract class ManagerAbstract implements AdapterAwareInterface {
     public function setDbAdapter(Adapter $adapter) {
         $this->adapter = $adapter;
     }
+    
+    public function getAdapter(){
+        return $this->adapter;
+    }
 
 }
