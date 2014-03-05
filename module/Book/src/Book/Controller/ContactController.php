@@ -6,7 +6,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Book\Form\ContactForm;
 use Book\Model\Contact;
-use Book\Model\ContactTable;
 
 class ContactController extends AbstractActionController {
 

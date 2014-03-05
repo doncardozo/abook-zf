@@ -7,7 +7,7 @@
     <body>
         <div class="container">
             <ul>
-                <li><a href="http://tony.fh2web.com/abook/public">Address Book</a></li>
+                <li><a href="http://abook-zf.local">Address Book</a></li>
             </ul>
         </div>
     </body>

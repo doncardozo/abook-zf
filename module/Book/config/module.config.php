@@ -71,63 +71,7 @@ return array(
                         'action' => 'delete'
                     )
                 )
-            ),            
-            'group-add' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/group/add',
-                    'constraints' => array(
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => "$nsController\Group",
-                        'action' => 'add'
-                    )
-                )
-            ),
-            'group-list' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/group/list',
-                    'constraints' => array(
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => "$nsController\Group",
-                        'action' => 'list'
-                    )
-                )
-            ),
-            'group-edit' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/group/edit[/:id]',
-                    'constraints' => array(
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => "$nsController\Group",
-                        'action' => 'edit'
-                    )
-                )
-            ),
-            'group-delete' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route' => '/group/delete[/:id]',
-                    'constraints' => array(
-                        'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => "$nsController\Group",
-                        'action' => 'delete'
-                    )
-                )
-            ),
+            )
         )
     ),
     'controllers' => array(
