@@ -20,6 +20,18 @@ class ContactsController extends AbstractActionController
             'contacts' => $result
         ));
     }
+    
+    public function addAction(){
+        
+    }
+    
+    public function editAction(){
+        
+    }
+    
+    public function showAction(){
+        
+    }
 
 
 }

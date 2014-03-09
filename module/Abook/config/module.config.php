@@ -3,6 +3,10 @@
 $Module = "Abook";
 $nsController = "$Module\Controller";
 $folderView = "abook";
+$constraints = array(
+    'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+    'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+);
 
 return array(
     'router' => array(
@@ -17,29 +21,58 @@ return array(
                     ),
                 ),
             ),
-            'abook' => array(
-                'type' => 'Literal',
+            'contact-add' => array(
+                'type' => 'Segment',
                 'options' => array(
-                    'route' => '/Contacts',
+                    'route' => '/contact/add',
+                    'constraints' => $constraints,
                     'defaults' => array(
-                        '__NAMESPACE__' => "$nsController\Contacts",
-                        'controller' => 'Contacts',
-                        'action' => 'index',
+                        'controller' => "$nsController\Contacts",
+                        'action' => "add"
                     ),
                 ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/[:controller[/:action]]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
-                            ),
-                        ),
+            ),
+            'contact-edit' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/contact/edit',
+                    'constraints' => $constraints,
+                    'defaults' => array(
+                        'controller' => "$nsController\Contacts",
+                        'action' => "edit"
+                    ),
+                ),
+            ),
+            'contact-show' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/contact/show',
+                    'constraints' => $constraints,
+                    'defaults' => array(
+                        'controller' => "$nsController\Contacts",
+                        'action' => "show"
+                    ),
+                ),
+            ),
+            'contact-delete' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/contact/del',
+                    'constraints' => $constraints,
+                    'defaults' => array(
+                        'controller' => "$nsController\Contacts",
+                        'action' => "delete"
+                    ),
+                ),
+            ),
+            'contact-list' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/contact/list',
+                    'constraints' => $constraints,
+                    'defaults' => array(
+                        'controller' => "$nsController\Contacts",
+                        'action' => "index"
                     ),
                 ),
             ),
