@@ -9,11 +9,12 @@ class ContactsController extends AbstractActionController
 {
 
     public function indexAction()
-    {
-        
+    {        
         $contacts = $this->getServiceLocator()->get("Abook\Model\Contacts");
         
         $result = $contacts->getContacts();
+        
+        #z$contactsEmails = $contacts->getContactsEmails();
         
         return new ViewModel(array(
             'contacts' => $result
