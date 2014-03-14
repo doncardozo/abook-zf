@@ -16,8 +16,12 @@ abstract class ManagerAbstract implements AdapterAwareInterface {
         $this->adapter = $adapter;
     }
     
-    public function getAdapter(){
+    public function getDbAdapter(){
         return $this->adapter;
+    }
+    
+    public function getConnection(){
+        return $this->adapter->getDriver()->getConnection();
     }
 
 }

@@ -2,16 +2,33 @@
 
 namespace Abook\Model;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\TableGateway\AbstractTableGateway;
-use Zend\Db\ResultSet\ResultSet;
+use Abook\Model\ManagerAbstract;
+use Zend\Db\TableGateway\TableGateway;
 
-class ContactsTable extends AbstractTableGateway {
+class ContactsTable extends ManagerAbstract {
     
-    protected $table;
-    
-    public function __construct(Adapter $adapter) {
-        $this->adapter = $adapter;
+    public function fetchAll() {
+
+        $contactsTable = new TableGateway("contacts", $this->getDbAdapter());   
+        $rowset = $contactsTable->select(function(\Zend\Db\Sql\Select $select){
+            $select->columns(array(
+                "id", "first_name", "last_name", "address"
+            ));
+            
+            $select->where(array("active"=>1,"deleted"=>0));
+        });
+        
+        return $rowset;
     }
     
+    function fetchById($id){
+        
+    }
+    
+    function create(){
+        
+    }
+    
+    
+
 }
