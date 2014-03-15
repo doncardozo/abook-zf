@@ -4,12 +4,13 @@
 <section class="col col-lg-8">
     
     <?php echo $this->form()->openTag($form); ?>
+    <?php $contacts = $form->get("contacts"); ?>
         <fieldset>
             <legend>Add</legend>
             <ul class="ul-add">
-                <li><?php echo $this->formRow($form->get("first_name")); ?></li>
-                <li><?php echo $this->formRow($form->get("last_name")); ?></li>
-                <li><?php echo $this->formRow($form->get("address")); ?></li>
+                <li><?php echo $this->formRow($contacts->get("firstName")); ?></li>
+                <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
+                <li><?php echo $this->formRow($contacts->get("address")); ?></li>
                 <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
             </ul>
         </fieldset>

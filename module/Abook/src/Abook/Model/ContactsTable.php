@@ -16,6 +16,7 @@ class ContactsTable extends ManagerAbstract {
             ));
             
             $select->where(array("active"=>1,"deleted"=>0));
+            $select->order(array("id"=>"desc"));            
         });
         
         return $rowset;
@@ -25,7 +26,18 @@ class ContactsTable extends ManagerAbstract {
         
     }
     
-    function create(){
+    function create(\Abook\Model\Contacts $contact){
+        
+        return;
+        $data = array(
+            'first_name' => $contact->firstName,
+            'last_name' => $contact->lastName,
+            'address' => $contact->address
+        );
+        
+        $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
+        
+        $contactsTable->insert($data);
         
     }
     
