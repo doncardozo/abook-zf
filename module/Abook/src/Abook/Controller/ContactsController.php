@@ -23,20 +23,36 @@ class ContactsController extends AbstractActionController {
 
         $form = new CreateContacts();
         $contacts = new Contacts();
-        
+        $form->bind($contacts);
+
         $request = $this->getRequest();
-        if($request->isPost()){
+        if ($request->isPost()) {
+
             $form->setData($request->getPost());
-            if($form->isValid()){
-                var_dump($contacts);
+
+            if ($form->isValid()) {
+
+                $this->getContactsTable()->create($contacts);
+                $this->redirect()->toRoute("contact-list");
             }
         }
-        
+
         return array("form" => $form);
     }
 
     public function editAction() {
-        
+
+        $contacts = new Contacts();
+        $form = new CreateContacts();
+        $form->bind($contacts);
+
+        $id = $this->params("id");
+        $contacts = $this->getContactsTable()->fetchById($id);
+
+        return array(
+            "form" => $form,
+            "contacts" => $contacts
+        );
     }
 
     public function showAction() {

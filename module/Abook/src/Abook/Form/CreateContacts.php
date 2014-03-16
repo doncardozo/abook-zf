@@ -12,7 +12,10 @@ class CreateContacts extends Form {
         
         parent::__construct("create_contact");
         
-        $this->setAttribute("method", "post")
+        $this->setAttributes(array(
+                "method" => "post", 
+                "autocomplete" => "off")
+             )
              ->setHydrator(new ClassMethodsHydrator(false))
              ->setInputFilter(new InputFilter());
      
@@ -27,7 +30,7 @@ class CreateContacts extends Form {
             "type" => "Zend\Form\Element\Csrf",
             "name" => "csrf"
         ));
-        
+
         $this->add(array(
             'name' => 'submit',            
             'attributes' => array(

@@ -35,8 +35,10 @@ return array(
             'contact-edit' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/contact/edit',
-                    'constraints' => $constraints,
+                    'route' => '/contact/edit[/][:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+'
+                    ),
                     'defaults' => array(
                         'controller' => "$nsController\Contacts",
                         'action' => "edit"
