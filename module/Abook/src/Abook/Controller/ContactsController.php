@@ -4,7 +4,7 @@ namespace Abook\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Abook\Form\CreateContacts;
+use Abook\Form\ContactsForm;
 use Abook\Entity\Contacts;
 
 class ContactsController extends AbstractActionController {
@@ -19,39 +19,108 @@ class ContactsController extends AbstractActionController {
         ));
     }
 
-    public function addAction() {
+    private function createAddForm(Contacts $entity) {
 
-        $form = new CreateContacts();
-        $contacts = new Contacts();
-        $form->bind($contacts);
+        $form = new ContactsForm("add_contact");
+
+        $form->bind($entity);
+
+        $form->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type' => 'submit',
+                'id' => 'submit',
+                'value' => 'Save',
+                'class' => 'btn btn-primary'
+            )
+        ));
+
+        return $form;
+    }
+
+    public function createAction(ContactsForm $form) {
 
         $request = $this->getRequest();
+
         if ($request->isPost()) {
 
+            $entity = new Contacts();
+
+            $form = $this->createAddForm($entity);
+
             $form->setData($request->getPost());
-
+            
             if ($form->isValid()) {
+                $entity = $form->getData();
+                $this->getContactsTable()->create($entity);
+                $this->redirect()->toRoute("contact-list");
+            } 
+                        
+        }
+        
+        return $form;
+    }
 
-                $this->getContactsTable()->create($contacts);
+    public function addAction() {
+
+        $addForm = $this->createAddForm(new Contacts());
+
+        $addForm = $this->createAction($addForm);
+
+        return array("form" => $addForm);
+    }
+
+    private function createEditForm($id) {
+        
+        $contact = $this->getContactsTable()->fetchById($id);
+
+        $form = new ContactsForm("edit_contact");
+                
+        $form->bind($contact);
+
+        $form->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type' => 'submit',
+                'id' => 'submit',
+                'value' => 'Update',
+                'class' => 'btn btn-primary'
+            )
+        ));
+
+        return $form;
+    }
+
+    public function updateAction(ContactsForm $form) {
+
+        $request = $this->getRequest();
+        
+        if($request->isPost()){
+            
+            $form->setData($request->getPost());
+            
+            if($form->isValid()){
+                $entity = $form->getData();
+                $this->getContactsTable()->update($entity);
                 $this->redirect()->toRoute("contact-list");
             }
+            
         }
-
-        return array("form" => $form);
+        
+        return $form;
     }
 
     public function editAction() {
 
-        $contacts = new Contacts();
-        $form = new CreateContacts();
-        $form->bind($contacts);
+        $id = (int)$this->params("id");
 
-        $id = $this->params("id");
-        $contacts = $this->getContactsTable()->fetchById($id);
+        $editForm = $this->createEditForm($id);
 
+        $editForm = $this->updateAction($editForm);
+        
         return array(
-            "form" => $form,
-            "contacts" => $contacts
+            "form" => $editForm,
+            "id" => $id
         );
     }
 

@@ -22,9 +22,9 @@
                     <?php foreach ($contacts as $contact) : ?>
                     
                     <tr>
-                        <td><?php echo $contact->id; ?></td>
-                        <td><?php echo $contact->first_name; ?></td>
-                        <td><?php echo $contact->last_name; ?></td>
+                        <td><a href="<?php echo $this->url('contact-edit', array("id"=>$contact->id)) ?>"><?php echo $contact->id; ?></a></td>
+                        <td><?php echo $contact->firstName; ?></td>
+                        <td><?php echo $contact->lastName; ?></td>
                         <td><?php echo $contact->address; ?></td>
                     </tr>
                     

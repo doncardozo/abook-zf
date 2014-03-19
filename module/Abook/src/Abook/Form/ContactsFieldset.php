@@ -17,6 +17,13 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
              ->setObject(new Contacts());
 
         $this->add(array(
+            "name" => "id",
+            "options" => array(
+                "type" => "hidden"
+            )
+        ));
+
+        $this->add(array(
             "name" => "firstName",
             "options" => array(
                 "label" => "First Name"

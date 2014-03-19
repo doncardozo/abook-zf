@@ -6,14 +6,14 @@ use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
 
-class CreateContacts extends Form {
+class ContactsForm extends Form {
     
-    public function __construct() {
+    public function __construct($name = null, $options = array()) {
         
-        parent::__construct("create_contact");
+        parent::__construct($name, $options);
         
         $this->setAttributes(array(
-                "method" => "post", 
+                "method" => "post",                 
                 "autocomplete" => "off")
              )
              ->setHydrator(new ClassMethodsHydrator(false))
@@ -30,16 +30,7 @@ class CreateContacts extends Form {
             "type" => "Zend\Form\Element\Csrf",
             "name" => "csrf"
         ));
-
-        $this->add(array(
-            'name' => 'submit',            
-            'attributes' => array(
-                'type' => 'submit',
-                'id' => 'submit',
-                'value' => 'Save',
-                'class' => 'btn btn-primary'
-            )
-        ));
+        
     }
     
 }

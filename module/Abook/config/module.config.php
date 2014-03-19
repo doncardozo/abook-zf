@@ -32,16 +32,40 @@ return array(
                     ),
                 ),
             ),
+            'contact-create' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/contact/create',
+                    'constraints' => $constraints,
+                    'defaults' => array(
+                        'controller' => "$nsController\Contacts",
+                        'action' => "create"
+                    ),
+                ),
+            ),
             'contact-edit' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/contact/edit[/][:id]',
+                    'route' => '/contact/edit[/:id]',
                     'constraints' => array(
                         'id' => '[0-9]+'
                     ),
                     'defaults' => array(
                         'controller' => "$nsController\Contacts",
                         'action' => "edit"
+                    ),
+                ),
+            ),
+            'contact-update' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/contact/update',
+                    'constraints' => array(
+                        'id' => '[0-9]+'
+                    ),
+                    'defaults' => array(
+                        'controller' => "$nsController\Contacts",
+                        'action' => "update"
                     ),
                 ),
             ),

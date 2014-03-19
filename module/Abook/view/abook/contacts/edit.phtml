@@ -1,18 +1,20 @@
 <?php $form->prepare(); ?>
-<?php $form->setAttribute("action", $this->url("contact-edit", array("action" => "edit"))); ?>
+<?php $contacts = $form->get("contacts"); ?>
 
-<section class="col col-lg-8">
-    
+<?php $form->setAttribute("action", $this->url("contact-edit", array("action" => "edit", "id" => $id))); ?>
+
+<section class="col col-lg-8">    
     <?php echo $this->form()->openTag($form); ?>
-    <?php $contacts = $form->get("contacts"); ?>
+    <?php #\Zend\Debug\Debug::dump($id); ?>
         <fieldset>
-            <legend>Add</legend>
+            <legend>Edit</legend>
             <ul class="ul-add">
                 <li><?php echo $this->formRow($contacts->get("firstName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("address")); ?></li>
                 <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
             </ul>
+            <?php echo $this->formHidden($contacts->get("id")); ?>
             <?php echo $this->formHidden($form->get("csrf")); ?>
         </fieldset>
     <?php echo $this->form()->closeTag(); ?>

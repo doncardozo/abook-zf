@@ -6,19 +6,34 @@ use Abook\Model\ManagerAbstract;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Stdlib\Hydrator;
 
 class ContactsTable extends ManagerAbstract {
 
     public function fetchAll() {
 
-        $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
-        $rowset = $contactsTable->select(function(\Zend\Db\Sql\Select $select) {
-            $select->columns(array("id", "first_name", "last_name", "address"));
-            $select->where(array("active" => 1, "deleted" => 0));
-            $select->order(array("id" => "desc"));
-        });
+        $select = <<<SQL
+            select 
+                id, 
+                first_name firstName, 
+                last_name lastName,
+                address
+            from contacts            
+            where 
+                deleted = 0
+            order by 1 desc;
+SQL;
 
-        return $rowset;
+        $stmt = $this->getDbAdapter()->createStatement($select);
+        $stmt->prepare();
+        $result = $stmt->execute();
+
+        if ($result instanceof ResultInterface && $result->isQueryResult()) {
+            $resultSet = new ResultSet;
+            $resultSet->initialize($result);
+
+            return $resultSet;
+        }
     }
 
     public function fetchById($id) {
@@ -46,10 +61,11 @@ SQL;
                 throw new \Exception("Could not find row {$id}");
             }
 
-            return $row;
-        }
-        else {
-            throw new \Exception();
+            $contacts = new \Abook\Entity\Contacts();
+            $hydrator = new Hydrator\ClassMethods();
+            $hydrator->hydrate((array) $row, $contacts);
+
+            return $contacts;
         }
     }
 
@@ -64,6 +80,21 @@ SQL;
         $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
 
         $contactsTable->insert($data);
+        $a = $contactsTable->getLastInsertValue();
+    }
+
+    public function update(\Abook\Entity\Contacts $contact) {
+
+        $data = array(
+            'first_name' => $contact->getFirstName(),
+            'last_name' => $contact->getLastName(),
+            'address' => $contact->getAddress()
+        );
+
+        if ($this->fetchById($contact->getId())) {
+            $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
+            $contactsTable->update($data, array("id" => $contact->getId()));
+        }
     }
 
 }
