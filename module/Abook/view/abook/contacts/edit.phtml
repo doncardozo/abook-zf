@@ -12,7 +12,7 @@
                 <li><?php echo $this->formRow($contacts->get("firstName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("address")); ?></li>
-                <li><?php echo $this->formRow($form->get("contactType")); ?></li>
+                <li><?php echo $this->formRow($contacts->get("contactType")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("active")); ?></li>
                 <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
             </ul>
@@ -24,5 +24,6 @@
 </section>
 
 <style type="text/css">
-    .ul-add li { list-style: none }    
+    .ul-add li { list-style: none; margin-bottom: 10px; }    
+    input[type="text"] { width: 440px; }
 </style>

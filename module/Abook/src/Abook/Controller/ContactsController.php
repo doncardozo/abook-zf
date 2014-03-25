@@ -21,9 +21,9 @@ class ContactsController extends AbstractActionController {
 
     private function createAddForm() {
         
-        $form = new ContactsForm("add_contact", $this->getContactsModel());
+        $form = new ContactsForm("add_contact", $this->getServiceLocator());
         
-        $form->get("contactType")->setValue(2);
+        $form->get("contactType")->setValue(1);
         
         $form->add(array(
             'name' => 'submit',
@@ -44,15 +44,12 @@ class ContactsController extends AbstractActionController {
 
         if ($request->isPost()) {
 
-            $contact = new Contacts();
-
-            $form = $this->createAddForm($contact);
+            $form = $this->createAddForm();
 
             $form->setData($request->getPost());
 
-            if ($form->isValid()) {
-                $contact = $form->getData();
-                $this->getContactsModel()->create($contact);
+            if ($form->isValid()) {                              
+                $this->getContactsModel()->create($form->getData());
                 $this->redirect()->toRoute("contact-list");
             }
         }
@@ -74,10 +71,10 @@ class ContactsController extends AbstractActionController {
         $contact = new Contacts();        
         $contact->hydrate($this->getContactsModel()->fetchById($id));
         
-        $form = new ContactsForm("edit_contact", $this->getContactsModel());
+        $form = new ContactsForm("edit_contact", $this->getServiceLocator());
 
-        $form->bind($contact);
-
+        $form->bind($contact);        
+        
         $form->add(array(
             'name' => 'submit',
             'attributes' => array(

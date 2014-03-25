@@ -37,7 +37,9 @@ SQL;
                 id, 
                 first_name firstName, 
                 last_name lastName,
-                address
+                address,
+                contact_type_id contactType,
+                active
             from contacts            
             where id = {$id}
 SQL;
@@ -57,13 +59,13 @@ SQL;
         return $row;        
     }
     
-    public function getArrayContactType(){
+    public function getContactType(){
         
-$select = <<<SQL
+        $select = <<<SQL
             select 
                 id, 
                 name
-            from categories
+            from contact_type
             where 
                 active = 1 and deleted = 0;
 SQL;
@@ -76,11 +78,7 @@ SQL;
 
         $result = $rs->getResultSet($result);
         
-        foreach($result as $row){
-            $data[$row->id] = $row->name;
-        }
-        
-        return $data;
+        return $result;
     }
 
     public function create(\Abook\Entity\Contacts $contact) {
@@ -88,7 +86,9 @@ SQL;
         $data = array(
             'first_name' => $contact->getFirstName(),
             'last_name' => $contact->getLastName(),
-            'address' => $contact->getAddress()
+            'address' => $contact->getAddress(),
+            'contact_type_id' => $contact->getContactType(),
+            'active' => $contact->getActive()
         );
 
         $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
@@ -103,7 +103,9 @@ SQL;
         $data = array(
             'first_name' => $contact->getFirstName(),
             'last_name' => $contact->getLastName(),
-            'address' => $contact->getAddress()
+            'address' => $contact->getAddress(),
+            'contact_type_id' => $contact->getContactType(),
+            'active' => $contact->getActive()
         );
 
         if ($this->fetchById($contact->getId())) {

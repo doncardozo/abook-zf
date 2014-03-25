@@ -22,10 +22,6 @@ class Contacts {
     
     private $phones;
     
-    public function __construct() {
-        #$this->contactType = array();       
-    }
-    
     public function getId() {
         return $this->id;
     }

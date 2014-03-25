@@ -64,31 +64,17 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
             )
         ));
 
-//        $option_for_select = $this->model->getWhatEver();
-//        $this->add($factory->createElement(array(
-//                    'name' => 'what_ever',
-//                    'type' => 'Zend\Form\Element\Select',
-//                    'attributes' => array(
-//                        'options' => $option_for_select,
-//                    ),
-//                    'options' => array(
-//                        'label' => 'What ever:',
-//                    ),
-//        )));
-
-//        $this->add(array(
-//            "type" => "Zend\Form\Element\Collection",
-//            "name" => "categories",
-//            "options" => array(
-//                "label" => "Please choose categories for this product",
-//                "count" => 1,
-//                "should_create_template" => false,
-//                "allow_add" => false,
-//                "target_element" => array(
-//                    "type" => "Abook\Form\CategoriesFieldset",
-//                ),
-//            ),
-//        ));
+        $this->add(array(
+            'name' => 'contactType',
+            'type' => 'select',
+            'attributes' => array(
+                'id' => 'contactType',
+                'class' => 'form-control'
+            ),
+            'options' => array(
+                'label' => 'Type'
+            ),
+        ));
     }
 
     public function getInputFilterSpecification() {
@@ -142,7 +128,7 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                         ),
                     ),
                 ),
-        ));
+            ));
     }
 
 }

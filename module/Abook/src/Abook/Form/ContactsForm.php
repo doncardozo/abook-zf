@@ -8,16 +8,22 @@ use Zend\Stdlib\Hydrator\ClassMethods as ClassMethodsHydrator;
 
 class ContactsForm extends Form {
 
-    public function __construct($name = null, $contactModel = null, $options = array()) {
+    protected $servLoc;
+            
+    public function __construct($name = null, $serviceLocator = null, $options = array()) {
 
         parent::__construct($name, $options);
 
+        $this->servLoc = $serviceLocator;
+
+        $inputFilter = new InputFilter();
+        
         $this->setAttributes(array(
                     "method" => "post",
                     "autocomplete" => "off")
                 )
                 ->setHydrator(new ClassMethodsHydrator(false))
-                ->setInputFilter(new InputFilter());
+                ->setInputFilter($inputFilter);
 
         $this->add(array(
             "type" => "Abook\Form\ContactsFieldset",
@@ -26,24 +32,45 @@ class ContactsForm extends Form {
             )
         ));
         
-        $this->add(array(
-            'name' => 'contactType',
-            'type' => 'select',
-            'attributes' => array(
-                'id' => 'contactType',
-                'class' => 'form-control'
-            ),
-            'options' => array(
-                'label' => 'Type',   
-                'value_options' => $contactModel->getArrayContactType(),
-                
-            ),
-        ));        
-
+        /* ContactType */
+        $contactType = $this->get('contacts')
+                            ->get('contactType')
+                            ->setOptions(array("value_options" => $this->getContactTypeValues()));
+        
+        $this->add($contactType); 
+        
+        $inputFilter->add(array(
+            "name" => "contactType",
+            "required" => false
+        ));
+        /* ContactType */
+        
         $this->add(array(
             "type" => "Zend\Form\Element\Csrf",
             "name" => "csrf"
         ));
+    }
+    
+    public function getContactTypeValues(){
+        
+        if(!is_null($this->servLoc)){
+            $contactTypeValues = $this->servLoc
+                                      ->get("Abook\Model\ContactsModel")
+                                      ->getContactType();
+        }
+        
+        if(sizeof($contactTypeValues) == 0){
+            return array();
+        }
+        else {
+            
+            foreach($contactTypeValues as $item){
+                $data[$item->id] = $item->name;
+            }
+            
+            return $data;
+        }
+        
     }
 
 }
