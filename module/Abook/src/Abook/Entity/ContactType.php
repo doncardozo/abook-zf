@@ -2,7 +2,7 @@
 
 namespace Abook\Entity;
 
-class Categories {
+class ContactType {
     
     private $id;
     

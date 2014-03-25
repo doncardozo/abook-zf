@@ -5,12 +5,19 @@
     
     <?php echo $this->form()->openTag($form); ?>
     <?php $contacts = $form->get("contacts"); ?>
+    <?php #$emails = $contacts->get("emails"); ?>
+    <?php #$phones = $contacts->get("phones"); ?>
+    <?php #\Zend\Debug\Debug::dump($contacts) ?>
+    
         <fieldset>
             <legend>Add</legend>
             <ul class="ul-add">
                 <li><?php echo $this->formRow($contacts->get("firstName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("address")); ?></li>
+                <li><?php echo $this->formRow($contacts->get("active")); ?></li>                
+                <li><?php echo $this->formRow($form->get("contactType")); ?></li>                
+                <li>&nbsp;</li>                
                 <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
             </ul>
             <?php echo $this->formHidden($form->get("csrf")); ?>

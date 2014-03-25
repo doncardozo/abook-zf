@@ -2,6 +2,8 @@
 
 namespace Abook\Entity;
 
+use Zend\Stdlib\Hydrator\ClassMethods;
+
 class Contacts {
     
     private $id;
@@ -11,6 +13,18 @@ class Contacts {
     private $lastName;
     
     private $address;
+    
+    private $contactType;
+    
+    private $active;
+    
+    private $emails;
+    
+    private $phones;
+    
+    public function __construct() {
+        #$this->contactType = array();       
+    }
     
     public function getId() {
         return $this->id;
@@ -26,6 +40,22 @@ class Contacts {
 
     public function getAddress() {
         return $this->address;
+    }
+
+    public function getContactType() {
+        return $this->contactType;
+    }
+
+    public function getActive() {
+        return $this->active;
+    }
+
+    public function getEmails() {
+        return $this->emails;
+    }
+
+    public function getPhones() {
+        return $this->phones;
     }
 
     public function setId($id) {
@@ -44,5 +74,25 @@ class Contacts {
         $this->address = $address;
     }
 
+    public function setContactType($contactType) {
+        $this->contactType = $contactType;
+    }
+
+    public function setActive($active) {
+        $this->active = $active;
+    }
+
+    public function setEmails($emails) {
+        $this->emails = $emails;
+    }
+
+    public function setPhones($phones) {
+        $this->phones = $phones;
+    }
+                
+    public function hydrate($data){
+        $hydrator = new ClassMethods();
+        $hydrator->hydrate((array)$data, $this);       
+    }
 
 }

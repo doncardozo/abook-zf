@@ -2,13 +2,11 @@
 
 namespace Abook\Model;
 
-use Abook\Model\ManagerAbstract;
+use Abook\Toolbox\Db\AbstractAdapterManager;
+use Abook\Toolbox\Db\ResultSetManager;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Adapter\Driver\ResultInterface;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Stdlib\Hydrator;
 
-class ContactsTable extends ManagerAbstract {
+class ContactsModel extends AbstractAdapterManager {
 
     public function fetchAll() {
 
@@ -28,12 +26,8 @@ SQL;
         $stmt->prepare();
         $result = $stmt->execute();
 
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet;
-            $resultSet->initialize($result);
-
-            return $resultSet;
-        }
+        $rs = new ResultSetManager();        
+        return $rs->getResultSet($result);
     }
 
     public function fetchById($id) {
@@ -51,22 +45,42 @@ SQL;
         $stmt = $this->getDbAdapter()->createStatement($select);
         $stmt->prepare();
         $result = $stmt->execute();
+        
+        $rs = new ResultSetManager();
 
-        if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $resultSet = new ResultSet;
-            $resultSet->initialize($result);
-
-            $row = $resultSet->current();
-            if (!$row) {
-                throw new \Exception("Could not find row {$id}");
-            }
-
-            $contacts = new \Abook\Entity\Contacts();
-            $hydrator = new Hydrator\ClassMethods();
-            $hydrator->hydrate((array) $row, $contacts);
-
-            return $contacts;
+        $row = $rs->getResultSet($result)->current();
+        
+        if (!$row) {
+            throw new \Exception("Could not find row {$id}");
         }
+
+        return $row;        
+    }
+    
+    public function getArrayContactType(){
+        
+$select = <<<SQL
+            select 
+                id, 
+                name
+            from categories
+            where 
+                active = 1 and deleted = 0;
+SQL;
+
+        $stmt = $this->getDbAdapter()->createStatement($select);
+        $stmt->prepare();
+        $result = $stmt->execute();
+        
+        $rs = new ResultSetManager();
+
+        $result = $rs->getResultSet($result);
+        
+        foreach($result as $row){
+            $data[$row->id] = $row->name;
+        }
+        
+        return $data;
     }
 
     public function create(\Abook\Entity\Contacts $contact) {
@@ -80,7 +94,8 @@ SQL;
         $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
 
         $contactsTable->insert($data);
-        $a = $contactsTable->getLastInsertValue();
+        
+        return $contactsTable->getLastInsertValue();
     }
 
     public function update(\Abook\Entity\Contacts $contact) {

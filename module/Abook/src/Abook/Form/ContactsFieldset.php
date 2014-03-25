@@ -14,7 +14,7 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
         parent::__construct("contacts");
 
         $this->setHydrator(new ClassMethodsHydrator(false))
-             ->setObject(new Contacts());
+                ->setObject(new Contacts());
 
         $this->add(array(
             "name" => "id",
@@ -52,61 +52,97 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                 "class" => "form-control"
             )
         ));
+
+        $this->add(array(
+            "name" => "active",
+            "type" => "checkbox",
+            "options" => array(
+                "label" => "Active"
+            ),
+            "attributes" => array(
+                "class" => "form-control"
+            )
+        ));
+
+//        $option_for_select = $this->model->getWhatEver();
+//        $this->add($factory->createElement(array(
+//                    'name' => 'what_ever',
+//                    'type' => 'Zend\Form\Element\Select',
+//                    'attributes' => array(
+//                        'options' => $option_for_select,
+//                    ),
+//                    'options' => array(
+//                        'label' => 'What ever:',
+//                    ),
+//        )));
+
+//        $this->add(array(
+//            "type" => "Zend\Form\Element\Collection",
+//            "name" => "categories",
+//            "options" => array(
+//                "label" => "Please choose categories for this product",
+//                "count" => 1,
+//                "should_create_template" => false,
+//                "allow_add" => false,
+//                "target_element" => array(
+//                    "type" => "Abook\Form\CategoriesFieldset",
+//                ),
+//            ),
+//        ));
     }
 
     public function getInputFilterSpecification() {
 
         return array(
             "firstName" => array(
-            "required" => true,
-            "filters" => array(
-                array("name" => "StripTags"),
-                array("name" => "StringTrim"),
-            ),
-            "validators" => array(
-                array(
-                    "name" => "StringLength",
-                    "options" => array(
-                        "encoding" => "UTF-8",
-                        "min" => 4,
-                        "max" => 100,
-                    ),
+                "required" => true,
+                "filters" => array(
+                    array("name" => "StripTags"),
+                    array("name" => "StringTrim"),
                 ),
-            )),
+                "validators" => array(
+                    array(
+                        "name" => "StringLength",
+                        "options" => array(
+                            "encoding" => "UTF-8",
+                            "min" => 4,
+                            "max" => 100,
+                        ),
+                    ),
+                )),
             "lastName" => array(
-            "required" => true,
-            "filters" => array(
-                array("name" => "StripTags"),
-                array("name" => "StringTrim"),
-            ),
-            "validators" => array(
-                array(
-                    "name" => "StringLength",
-                    "options" => array(
-                        "encoding" => "UTF-8",
-                        "min" => 4,
-                        "max" => 100,
-                    ),
+                "required" => true,
+                "filters" => array(
+                    array("name" => "StripTags"),
+                    array("name" => "StringTrim"),
                 ),
-            )),
+                "validators" => array(
+                    array(
+                        "name" => "StringLength",
+                        "options" => array(
+                            "encoding" => "UTF-8",
+                            "min" => 4,
+                            "max" => 100,
+                        ),
+                    ),
+                )),
             "address" => array(
-            "required" => true,
-            "filters" => array(
-                array("name" => "StripTags"),
-                array("name" => "StringTrim"),
-            ),
-            "validators" => array(
-                array(
-                    "name" => "StringLength",
-                    "options" => array(
-                        "encoding" => "UTF-8",
-                        "min" => 4,
-                        "max" => 100,
+                "required" => true,
+                "filters" => array(
+                    array("name" => "StripTags"),
+                    array("name" => "StringTrim"),
+                ),
+                "validators" => array(
+                    array(
+                        "name" => "StringLength",
+                        "options" => array(
+                            "encoding" => "UTF-8",
+                            "min" => 4,
+                            "max" => 100,
+                        ),
                     ),
                 ),
-            ),
         ));
-
     }
 
 }

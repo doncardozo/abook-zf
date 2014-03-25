@@ -1,11 +1,11 @@
 <?php
 
-namespace Abook\Model;
+namespace Abook\Toolbox\Db;
 
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterAwareInterface;
 
-abstract class ManagerAbstract implements AdapterAwareInterface {
+abstract class AbstractAdapterManager implements AdapterAwareInterface {
 
     /**
      * @var Zend\Db\Adapter\Adapter
