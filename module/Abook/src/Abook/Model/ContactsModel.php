@@ -128,13 +128,13 @@ SQL;
             $id = $contactsTable->getLastInsertValue();
 
             if (sizeof($emailData) > 0) {
-                $data = array();
+                
                 $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
                 $this->insertEmails($emailsTable, $emailData, $id);
             }
 
             if (sizeof($phoneData) > 0) {
-                $data = array();
+                
                 $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
                 $this->insertPhones($phonesTable, $phoneData, $id);
             }
@@ -171,17 +171,14 @@ SQL;
                 $contactsTable->update($data, array("id" => $contact->getId()));
 
                 if (sizeof($emailData) > 0) {
-
-                    $data = array();
+                    
                     $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
 
                     if (sizeof($current["emails"]) > 0) {
 
                         # Update email
-                        foreach ($emailData as $email) {
-                            $data["email"] = $email->getEmail();
-                            $emailsTable->update($data, array("id" => $email->getId(), "contact_id" => $contact->getId()));
-                        }
+                        $this->updateEmails($emailsTable, $emailData, $contact->getId());
+                        
                     } else {
 
                         # Insert new email
@@ -190,18 +187,17 @@ SQL;
                 }
 
                 if (sizeof($phoneData) > 0) {
-                    $data = array();
+                    
                     $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
 
                     if (sizeof($current["phones"]) > 0) {
-
-                        foreach ($phoneData as $phone) {
-                            $data["phone_number"] = $phone->getPhoneNumber();
-                            $phonesTable->update($data, array("id" => $phone->getId(), "contact_id" => $contact->getId()));
-                        }
                         
+                        # Update phones
+                        $this->updatePhones($phonesTable, $phonesTable, $contact->getId());
+                                                
                     } else {
-                        
+
+                        # Insert phones
                         $this->insertPhones($phonesTable, $phoneData, $contact->getId());
                     }
                 }
@@ -213,7 +209,7 @@ SQL;
         }
     }
 
-    public function insertEmails(TableGateway $emailsTable, array $emailData, $contact_id) {
+    private function insertEmails(TableGateway $emailsTable, array $emailData, $contact_id) {
         $data = array();
         foreach ($emailData as $email) {
             $data["email"] = $email->getEmail();
@@ -222,7 +218,25 @@ SQL;
         }
     }
 
-    public function insertPhones(TableGateway $phonesTable, array $phoneData, $contact_id) {
+    private function insertPhones(TableGateway $phonesTable, array $phoneData, $contact_id) {
+        $data = array();
+        foreach ($phoneData as $phone) {
+            $data["phone_number"] = $phone->getPhoneNumber();
+            $data["contact_id"] = $contact_id;
+            $phonesTable->insert($data);
+        }
+    }
+
+    private function updateEmails(TableGateway $emailsTable, array $emailData, $contact_id) {
+        $data = array();
+        foreach ($emailData as $email) {
+            $data["email"] = $email->getEmail();
+            $data["contact_id"] = $contact_id;
+            $emailsTable->insert($data);
+        }
+    }
+
+    private function updatePhones(TableGateway $phonesTable, array $phoneData, $contact_id) {
         $data = array();
         foreach ($phoneData as $phone) {
             $data["phone_number"] = $phone->getPhoneNumber();
