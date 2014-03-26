@@ -75,6 +75,34 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                 'label' => 'Type'
             ),
         ));
+
+        $this->add(array(
+            "type" => "Zend\Form\Element\Collection",
+            "name" => "emails",
+            "options" => array(
+                "label" => "Emails",
+                "count" => 1,
+                "should_create_template" => true,
+                "allow_add" => true,
+                "target_element" => array(
+                    "type" => "Abook\Form\ContactsEmailsFieldset",
+                ),
+            ),
+        ));
+
+        $this->add(array(
+            "type" => "Zend\Form\Element\Collection",
+            "name" => "phones",
+            "options" => array(
+                "label" => "Phones",
+                "count" => 1,
+                "should_create_template" => true,
+                "allow_add" => true,
+                "target_element" => array(
+                    "type" => "Abook\Form\ContactsPhonesFieldset",
+                ),
+            ),
+        ));
     }
 
     public function getInputFilterSpecification() {
@@ -128,7 +156,7 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                         ),
                     ),
                 ),
-            ));
+        ));
     }
 
 }

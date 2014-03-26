@@ -6,15 +6,16 @@ use Abook\Model\ManagerAbstract;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\ResultSet\ResultSet;
 
-class ContactsPhones extends ManagerAbstract {
+class ContactsEmailsModel extends ManagerAbstract {
     
-    public function getContactsPhonesByContact($id){
+    public function getContactsEmailsByContact($id){
         
                 $select = <<<SQL
             select 
                 id, 
-                contact_id, 
-                phone_number
+                first_name, 
+                last_name,
+                address
             from contacts            
 SQL;
         
@@ -25,7 +26,7 @@ SQL;
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
             $resultSet = new ResultSet;
             $resultSet->initialize($result);
-            return $resultSet;
+            return $resultSet->toArray();
         }
     }
     

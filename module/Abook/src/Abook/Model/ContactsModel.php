@@ -5,6 +5,7 @@ namespace Abook\Model;
 use Abook\Toolbox\Db\AbstractAdapterManager;
 use Abook\Toolbox\Db\ResultSetManager;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Sql;
 
 class ContactsModel extends AbstractAdapterManager {
 
@@ -26,7 +27,7 @@ SQL;
         $stmt->prepare();
         $result = $stmt->execute();
 
-        $rs = new ResultSetManager();        
+        $rs = new ResultSetManager();
         return $rs->getResultSet($result);
     }
 
@@ -41,26 +42,47 @@ SQL;
                 contact_type_id contactType,
                 active
             from contacts            
-            where id = {$id}
+            where id = {$id};
+            
+            select 
+                id,
+                email
+            from contacts_emails
+            where contact_id = {$id};
+            
+            select 
+                id,
+                phone_number phoneNumber
+            from contacts_phones
+            where contact_id = {$id};
 SQL;
 
-        $stmt = $this->getDbAdapter()->createStatement($select);
-        $stmt->prepare();
-        $result = $stmt->execute();
-        
-        $rs = new ResultSetManager();
 
-        $row = $rs->getResultSet($result)->current();
-        
-        if (!$row) {
-            throw new \Exception("Could not find row {$id}");
+        $result = $this->getConnection()->execute($select);
+        $statement = $result->getResource();
+
+        $resultSet1 = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $resultSet1 = (sizeof($resultSet1) > 0) ? array_pop($resultSet1) : array();
+
+        if ($statement->nextRowSet()) {
+            $resultSet2 = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $resultSet2 = (sizeof($resultSet2) > 0) ? $resultSet2 : array();
         }
 
-        return $row;        
+        if ($statement->nextRowSet()) {
+            $resultSet3 = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            $resultSet3 = (sizeof($resultSet3) > 0) ? $resultSet3 : array();
+        }
+
+        $contacts["contacts"] = $resultSet1;
+        $contacts["emails"] = $resultSet2;
+        $contacts["phones"] = $resultSet3;
+
+        return $contacts;
     }
-    
-    public function getContactType(){
-        
+
+    public function getContactType() {
+
         $select = <<<SQL
             select 
                 id, 
@@ -73,11 +95,11 @@ SQL;
         $stmt = $this->getDbAdapter()->createStatement($select);
         $stmt->prepare();
         $result = $stmt->execute();
-        
+
         $rs = new ResultSetManager();
 
         $result = $rs->getResultSet($result);
-        
+
         return $result;
     }
 
@@ -91,11 +113,36 @@ SQL;
             'active' => $contact->getActive()
         );
 
-        $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
+        $emailData = $contact->getEmails();
 
-        $contactsTable->insert($data);
-        
-        return $contactsTable->getLastInsertValue();
+        $phoneData = $contact->getPhones();
+
+        $connection = $this->getConnection()->beginTransaction();
+
+        try {
+
+            $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
+
+            $contactsTable->insert($data);
+
+            $id = $contactsTable->getLastInsertValue();
+
+            if (sizeof($emailData) > 0) {
+                $data = array();
+                $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
+                $this->insertEmails($emailsTable, $emailData, $id);
+            }
+
+            if (sizeof($phoneData) > 0) {
+                $data = array();
+                $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
+                $this->insertPhones($phonesTable, $phoneData, $id);
+            }
+
+            $connection->commit();
+        } catch (Exception $ex) {
+            $connection->rollback();
+        }
     }
 
     public function update(\Abook\Entity\Contacts $contact) {
@@ -108,9 +155,79 @@ SQL;
             'active' => $contact->getActive()
         );
 
-        if ($this->fetchById($contact->getId())) {
-            $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
-            $contactsTable->update($data, array("id" => $contact->getId()));
+        $emailData = $contact->getEmails();
+
+        $phoneData = $contact->getPhones();
+
+        $connection = $this->getConnection()->beginTransaction();
+
+        try {
+
+            $current = $this->fetchById($contact->getId());
+            # Check if exist record.
+            if (sizeof($current["contacts"]) > 0) {
+
+                $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
+                $contactsTable->update($data, array("id" => $contact->getId()));
+
+                if (sizeof($emailData) > 0) {
+
+                    $data = array();
+                    $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
+
+                    if (sizeof($current["emails"]) > 0) {
+
+                        # Update email
+                        foreach ($emailData as $email) {
+                            $data["email"] = $email->getEmail();
+                            $emailsTable->update($data, array("id" => $email->getId(), "contact_id" => $contact->getId()));
+                        }
+                    } else {
+
+                        # Insert new email
+                        $this->insertEmails($emailTable, $emailData, $contact->getId());
+                    }
+                }
+
+                if (sizeof($phoneData) > 0) {
+                    $data = array();
+                    $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
+
+                    if (sizeof($current["phones"]) > 0) {
+
+                        foreach ($phoneData as $phone) {
+                            $data["phone_number"] = $phone->getPhoneNumber();
+                            $phonesTable->update($data, array("id" => $phone->getId(), "contact_id" => $contact->getId()));
+                        }
+                        
+                    } else {
+                        
+                        $this->insertPhones($phonesTable, $phoneData, $contact->getId());
+                    }
+                }
+
+                $connection->commit();
+            }
+        } catch (Exception $ex) {
+            $connection->rollback();
+        }
+    }
+
+    public function insertEmails(TableGateway $emailsTable, array $emailData, $contact_id) {
+        $data = array();
+        foreach ($emailData as $email) {
+            $data["email"] = $email->getEmail();
+            $data["contact_id"] = $contact_id;
+            $emailsTable->insert($data);
+        }
+    }
+
+    public function insertPhones(TableGateway $phonesTable, array $phoneData, $contact_id) {
+        $data = array();
+        foreach ($phoneData as $phone) {
+            $data["phone_number"] = $phone->getPhoneNumber();
+            $data["contact_id"] = $contact_id;
+            $phonesTable->insert($data);
         }
     }
 

@@ -5,8 +5,6 @@
     
     <?php echo $this->form()->openTag($form); ?>
     <?php $contacts = $form->get("contacts"); ?>
-    <?php #$emails = $contacts->get("emails"); ?>
-    <?php #$phones = $contacts->get("phones"); ?>
     <?php #\Zend\Debug\Debug::dump($contacts) ?>
     
         <fieldset>
@@ -16,6 +14,8 @@
                 <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("address")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("contactType")); ?></li>                
+                <li><?php echo $this->formCollection($contacts->get("emails")); ?></li>                
+                <li><?php echo $this->formCollection($contacts->get("phones")); ?></li>                
                 <li><?php echo $this->formRow($contacts->get("active")); ?></li>                                        
                 <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
             </ul>

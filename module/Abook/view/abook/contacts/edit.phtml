@@ -5,7 +5,7 @@
 
 <section class="col col-lg-8">    
     <?php echo $this->form()->openTag($form); ?>
-    <?php #\Zend\Debug\Debug::dump($id); ?>
+    <?php #\Zend\Debug\Debug::dump($contacts); ?>
         <fieldset>
             <legend>Edit</legend>
             <ul class="ul-add">
@@ -13,6 +13,8 @@
                 <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("address")); ?></li>
                 <li><?php echo $this->formRow($contacts->get("contactType")); ?></li>
+                <li><?php echo $this->formCollection($contacts->get("emails")); ?></li>                
+                <li><?php echo $this->formCollection($contacts->get("phones")); ?></li>                 
                 <li><?php echo $this->formRow($contacts->get("active")); ?></li>
                 <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
             </ul>
