@@ -128,13 +128,13 @@ SQL;
             $id = $contactsTable->getLastInsertValue();
 
             if (sizeof($emailData) > 0) {
-                
+
                 $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
                 $this->insertEmails($emailsTable, $emailData, $id);
             }
 
             if (sizeof($phoneData) > 0) {
-                
+
                 $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
                 $this->insertPhones($phonesTable, $phoneData, $id);
             }
@@ -171,14 +171,13 @@ SQL;
                 $contactsTable->update($data, array("id" => $contact->getId()));
 
                 if (sizeof($emailData) > 0) {
-                    
+
                     $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
 
                     if (sizeof($current["emails"]) > 0) {
 
                         # Update email
-                        $this->updateEmails($emailsTable, $emailData, $contact->getId());
-                        
+                        $this->updateEmails($emailsTable, $emailData, $current["emails"], $contact->getId());
                     } else {
 
                         # Insert new email
@@ -187,14 +186,13 @@ SQL;
                 }
 
                 if (sizeof($phoneData) > 0) {
-                    
+
                     $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
 
                     if (sizeof($current["phones"]) > 0) {
-                        
+
                         # Update phones
-                        $this->updatePhones($phonesTable, $phonesTable, $contact->getId());
-                                                
+                        $this->updatePhones($phonesTable, $phoneData, $current["phones"], $contact->getId());
                     } else {
 
                         # Insert phones
@@ -227,21 +225,55 @@ SQL;
         }
     }
 
-    private function updateEmails(TableGateway $emailsTable, array $emailData, $contact_id) {
+    private function updateEmails(TableGateway $emailsTable, array $emailData, array $currEmailData, $contact_id) {
+
         $data = array();
+        $update = false;
+        
         foreach ($emailData as $email) {
-            $data["email"] = $email->getEmail();
-            $data["contact_id"] = $contact_id;
-            $emailsTable->insert($data);
+            
+            foreach ($currEmailData as $currEmail) {
+                if ($email->getId() == $currEmail["id"]) {
+                    # Update
+                    $data["email"] = $email->getEmail();
+                    $emailsTable->update($data, array(
+                        "id" => $email->getId(),
+                        "contact_id" => $contact_id
+                    ));
+                    $update = true;
+                }
+            }
+            
+            if(!$update){
+                $this->insertEmails($emailsTable, $emailData, $contact_id);
+            }
+                
         }
+        
     }
 
-    private function updatePhones(TableGateway $phonesTable, array $phoneData, $contact_id) {
+    private function updatePhones(TableGateway $phonesTable, array $phoneData, array $currPhoneData, $contact_id) {
         $data = array();
+        $update = false;
+        
         foreach ($phoneData as $phone) {
-            $data["phone_number"] = $phone->getPhoneNumber();
-            $data["contact_id"] = $contact_id;
-            $phonesTable->insert($data);
+            
+            foreach ($currPhoneData as $currPhone) {
+                if ($phone->getId() == $currPhone["id"]) {
+                    # Update
+                    $data["phone_number"] = $phone->getPhoneNumber();
+                    $phonesTable->update($data, array(
+                        "id" => $phone->getId(),
+                        "contact_id" => $contact_id
+                    ));
+                    $update = true;
+                }
+            }
+            
+            if(!$update){
+                $this->insertPhones($phonesTable, $phoneData, $contact_id);
+            }
+                
         }
     }
 
