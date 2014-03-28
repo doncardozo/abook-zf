@@ -28,7 +28,8 @@ class ContactsPhonesFieldset extends Fieldset implements InputFilterProviderInte
                 "label" => ""
             ),
             "attributes" => array(
-                "class" => "form-control"
+                "class" => "form-control",
+                "style" => "margin-bottom: 10px;"
             )
         ));        
     }
