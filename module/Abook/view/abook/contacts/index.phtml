@@ -14,6 +14,7 @@
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Address</th>
+                        <th>Type</th>
                         <th>Active</th>                        
                     </tr>
                 </thead>
@@ -27,6 +28,7 @@
                         <td><?php echo $contact->firstName; ?></td>
                         <td><?php echo $contact->lastName; ?></td>
                         <td><?php echo $contact->address; ?></td>
+                        <td><?php echo $contact->contactType; ?></td>
                         <td><?php echo ($contact->active) ? "Yes" : "No"; ?></td>                        
                     </tr>
                     

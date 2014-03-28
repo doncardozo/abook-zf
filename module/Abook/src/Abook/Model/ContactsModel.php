@@ -17,14 +17,16 @@ class ContactsModel extends AbstractAdapterManager {
 
         $select = <<<SQL
             select 
-                id, 
-                first_name firstName, 
-                last_name lastName,
-                address,
-                active
-            from contacts            
+                c.id, 
+                c.first_name firstName, 
+                c.last_name lastName,
+                c.address,
+                ct.name contactType,
+                c.active
+            from contacts c 
+                inner join contact_type ct on c.contact_type_id = ct.id
             where 
-                deleted = 0
+                c.deleted = 0
             order by 1 desc;
 SQL;
 
