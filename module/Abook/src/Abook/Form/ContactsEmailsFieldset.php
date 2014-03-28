@@ -37,7 +37,7 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
 
         return array(
             "email" => array(
-                "required" => true,
+                "required" => false,
                 "filters" => array(
                     array("name" => "StripTags"),
                     array("name" => "StringTrim"),

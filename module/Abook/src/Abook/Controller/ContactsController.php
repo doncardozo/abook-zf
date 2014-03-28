@@ -71,27 +71,12 @@ class ContactsController extends AbstractActionController {
         $contactData = $this->getContactsModel()->fetchById($id);
         
         $contact = new Contacts();        
-        $contact->hydrate($contactData["contacts"]);
-                 
-        foreach($contactData["emails"] as $item){
-            $contactEmail = new \Abook\Entity\ContactsEmails();
-            $contactEmail->setId($item["id"]);
-            $contactEmail->setEmail($item["email"]);  
-            $contactsEmails[] = $contactEmail;
-        }        
-        $contact->setEmails($contactsEmails);
-        
-        $contactsPhones = array();
-        foreach($contactData["phones"] as $item){
-            $contactPhone = new \Abook\Entity\ContactsPhones();
-            $contactPhone->setId($item["id"]);
-            $contactPhone->setPhoneNumber($item["phoneNumber"]);  
-            $contactsPhones[] = $contactPhone;
-        }        
-        $contact->setPhones($contactsPhones);
+        $contact->hydrate($contactData["contacts"]);                 
+        $contact->setEmails($contactData["emails"]);      
+        $contact->setPhones($contactData["phones"]);
         
         $form = new ContactsForm("edit_contact", $this->getServiceLocator());
-
+        
         $form->bind($contact);        
         
         $form->add(array(

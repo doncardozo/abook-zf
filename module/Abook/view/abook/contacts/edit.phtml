@@ -6,26 +6,58 @@
 <section class="col col-lg-8">    
     <?php echo $this->form()->openTag($form); ?>
     <?php #\Zend\Debug\Debug::dump($contacts); ?>
-        <fieldset>
-            <legend>Edit</legend>
-            <ul class="ul-add">
-                <li><?php echo $this->formRow($contacts->get("firstName")); ?></li>
-                <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
-                <li><?php echo $this->formRow($contacts->get("address")); ?></li>
-                <li><?php echo $this->formRow($contacts->get("contactType")); ?></li>
-                <li><?php echo $this->formCollection($contacts->get("emails")); ?></li>                
-                <li><?php echo $this->formCollection($contacts->get("phones")); ?></li>                 
-                <li><?php echo $this->formRow($contacts->get("active")); ?></li>
-                <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
-            </ul>
-            <?php echo $this->formHidden($contacts->get("id")); ?>
-            <?php echo $this->formHidden($form->get("csrf")); ?>
-        </fieldset>
+    <fieldset>
+        <legend>Edit</legend>
+        <ul class="ul-add">
+            <li><?php echo $this->formRow($contacts->get("firstName")); ?></li>
+            <li><?php echo $this->formRow($contacts->get("lastName")); ?></li>
+            <li><?php echo $this->formRow($contacts->get("address")); ?></li>
+            <li><?php echo $this->formRow($contacts->get("contactType")); ?></li>
+            <li>
+                <div id="email-wrapper">
+                    <?php echo $this->formCollection($contacts->get("emails")); ?>
+                </div>                
+            </li>                
+            <li><a id="add-email" class="btn btn-primary">Add a new Email</a></li>              
+            <li>
+                <div id="phone-wrapper">
+                    <?php echo $this->formCollection($contacts->get("phones")); ?>
+                </div>                
+            </li>                
+            <li><a id="add-phone" class="btn btn-primary">Add a new Phone</a></li>
+            <li><?php echo $this->formRow($contacts->get("active")); ?></li>
+            <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
+        </ul>
+        <?php echo $this->formHidden($contacts->get("id")); ?>
+        <?php echo $this->formHidden($form->get("csrf")); ?>
+    </fieldset>
     <?php echo $this->form()->closeTag(); ?>
-    
+
 </section>
 
 <style type="text/css">
     .ul-add li { list-style: none; margin-bottom: 10px; }    
     input[type="text"] { width: 440px; }
 </style>
+
+<script type="text/javascript">
+
+    $(function() {
+        $("#add-email").on("click", function() {
+            var currentCount = $("#email-wrapper > fieldset > .form-control").length;           
+            var template = $("#email-wrapper > fieldset > span").data("template");
+            template = template.replace(/__index__/g, currentCount);
+            $("#email-wrapper > fieldset").append(template);
+            return false;
+        });
+        
+        $("#add-phone").on("click", function() {
+            var currentCount = $("#phone-wrapper > fieldset > .form-control").length;           
+            var template = $("#phone-wrapper > fieldset > span").data("template");
+            template = template.replace(/__index__/g, currentCount);
+            $("#phone-wrapper > fieldset").append(template);
+            return false;
+        });        
+    });
+
+</script>

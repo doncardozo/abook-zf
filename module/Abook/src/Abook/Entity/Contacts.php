@@ -78,12 +78,28 @@ class Contacts {
         $this->active = $active;
     }
 
-    public function setEmails($emails) {
-        $this->emails = $emails;
+    public function setEmails(array $emails) {
+        $this->emails = array();
+        foreach($emails as $email){                                                
+            $id = is_array($email) ? $email["id"] : $email->getId();
+            $email = is_array($email) ? $email["email"] : $email->getEmail();                        
+            $entity = new ContactsEmails();
+            $entity->setId($id);
+            $entity->setEmail($email);            
+            $this->emails[] = $entity;
+        }        
     }
 
     public function setPhones($phones) {
-        $this->phones = $phones;
+        $this->phones = array();
+        foreach($phones as $phone){                        
+            $id = is_array($phone) ? $phone["id"] : $phone->getId();
+            $phone = is_array($phone) ? $phone["phoneNumber"] : $phone->getPhoneNumber();                        
+            $entity = new ContactsPhones();
+            $entity->setId($id);            
+            $entity->setPhoneNumber($phone);            
+            $this->phones[] = $entity;
+        }  
     }
                 
     public function hydrate($data){

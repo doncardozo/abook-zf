@@ -5,7 +5,7 @@ namespace Abook\Model;
 use Abook\Toolbox\Db\AbstractAdapterManager;
 use Abook\Toolbox\Db\ResultSetManager;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Sql;
+use Abook\Service\EmailsPhonesControl;
 
 class ContactsModel extends AbstractAdapterManager {
 
@@ -154,10 +154,18 @@ SQL;
             'contact_type_id' => $contact->getContactType(),
             'active' => $contact->getActive()
         );
-
         $emailData = $contact->getEmails();
-
         $phoneData = $contact->getPhones();
+
+        # Get DB current data
+        $current = $this->fetchById($contact->getId());
+        # Set emails and phones into contacts entity
+        $contactInDB = new \Abook\Entity\Contacts();
+        $contactInDB->setEmails($current["emails"]);
+        $contactInDB->setPhones($current["phones"]);
+
+        # Create EPC object
+        $epc = new EmailsPhonesControl();
 
         $connection = $this->getConnection()->beginTransaction();
 
@@ -170,110 +178,87 @@ SQL;
                 $contactsTable = new TableGateway("contacts", $this->getDbAdapter());
                 $contactsTable->update($data, array("id" => $contact->getId()));
 
-                if (sizeof($emailData) > 0) {
+                # Emails
+                $epc->setData($emailData, $contactInDB->getEmails());
 
-                    $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
+                $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
 
-                    if (sizeof($current["emails"]) > 0) {
-
-                        # Update email
-                        $this->updateEmails($emailsTable, $emailData, $current["emails"], $contact->getId());
-                    } else {
-
-                        # Insert new email
-                        $this->insertEmails($emailTable, $emailData, $contact->getId());
-                    }
+                $arrayPrototype = array(
+                    "id" => "id",
+                    "field_name" => "email",
+                    "method_name" => "getEmail"
+                );
+                
+                if (sizeof($epc->getToInsert()) > 0) {
+                    $this->insertData($emailsTable, $emailData, $arrayPrototype, $contact->getId());
                 }
 
-                if (sizeof($phoneData) > 0) {
-
-                    $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
-
-                    if (sizeof($current["phones"]) > 0) {
-
-                        # Update phones
-                        $this->updatePhones($phonesTable, $phoneData, $current["phones"], $contact->getId());
-                    } else {
-
-                        # Insert phones
-                        $this->insertPhones($phonesTable, $phoneData, $contact->getId());
-                    }
+                if (sizeof($epc->getToUpdate()) > 0) {
+                    $this->updateData($emailsTable, $emailData, $epc->getToUpdate(), $arrayPrototype, $contact->getId());
                 }
+
+                if (sizeof($epc->getToDelete()) > 0) {
+                    
+                }
+
+                # Phones
+                $epc->setData($phoneData, $contactInDB->getPhones());
+
+                $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
+
+                $arrayPrototype = array(
+                    "id" => "id",
+                    "field_name" => "phone_number",
+                    "method_name" => "getPhoneNumber"
+                );
+                
+                if (sizeof($epc->getToInsert()) > 0) {
+                    $this->insertData($phonesTable, $phoneData, $arrayPrototype, $contact->getId());
+                }
+
+                if (sizeof($epc->getToUpdate()) > 0) {
+                    $this->updateData($phonesTable, $phoneData, $epc->getToUpdate(),$arrayPrototype, $contact->getId());
+                }
+
+                if (sizeof($epc->getToDelete()) > 0) {
+                    
+                }
+
 
                 $connection->commit();
             }
+            
         } catch (Exception $ex) {
             $connection->rollback();
         }
     }
 
-    private function insertEmails(TableGateway $emailsTable, array $emailData, $contact_id) {
+    private function insertData(TableGateway $table, array $dataPost, array $arrayPrototype, $contact_id) {
         $data = array();
-        foreach ($emailData as $email) {
-            $data["email"] = $email->getEmail();
-            $data["contact_id"] = $contact_id;
-            $emailsTable->insert($data);
+        foreach ($dataPost as $obj) {
+            if ($obj->getId() == "") {
+                $data[$arrayPrototype["field_name"]] = $obj->{$arrayPrototype["method_name"]}();
+                $data["contact_id"] = $contact_id;
+                $table->insert($data);
+            }
         }
     }
 
-    private function insertPhones(TableGateway $phonesTable, array $phoneData, $contact_id) {
-        $data = array();
-        foreach ($phoneData as $phone) {
-            $data["phone_number"] = $phone->getPhoneNumber();
-            $data["contact_id"] = $contact_id;
-            $phonesTable->insert($data);
-        }
-    }
-
-    private function updateEmails(TableGateway $emailsTable, array $emailData, array $currEmailData, $contact_id) {
+    private function updateData(TableGateway $table, array $dataPost, array $epc, array $arrayPrototype, $contact_id) {
 
         $data = array();
-        $update = false;
-        
-        foreach ($emailData as $email) {
-            
-            foreach ($currEmailData as $currEmail) {
-                if ($email->getId() == $currEmail["id"]) {
+
+        foreach ($dataPost as $dPost) {
+            foreach ($epc as $obj) {
+                if ($dPost->getId() == $obj->getId()) {
                     # Update
-                    $data["email"] = $email->getEmail();
-                    $emailsTable->update($data, array(
-                        "id" => $email->getId(),
+                    $data[$arrayPrototype["field_name"]] = $dPost->{$arrayPrototype["method_name"]}();
+                    $table->update($data, array(
+                        "id" => $dPost->getId(),
                         "contact_id" => $contact_id
                     ));
-                    $update = true;
                 }
             }
-            
-            if(!$update){
-                $this->insertEmails($emailsTable, $emailData, $contact_id);
-            }
-                
-        }
-        
-    }
-
-    private function updatePhones(TableGateway $phonesTable, array $phoneData, array $currPhoneData, $contact_id) {
-        $data = array();
-        $update = false;
-        
-        foreach ($phoneData as $phone) {
-            
-            foreach ($currPhoneData as $currPhone) {
-                if ($phone->getId() == $currPhone["id"]) {
-                    # Update
-                    $data["phone_number"] = $phone->getPhoneNumber();
-                    $phonesTable->update($data, array(
-                        "id" => $phone->getId(),
-                        "contact_id" => $contact_id
-                    ));
-                    $update = true;
-                }
-            }
-            
-            if(!$update){
-                $this->insertPhones($phonesTable, $phoneData, $contact_id);
-            }
-                
         }
     }
 

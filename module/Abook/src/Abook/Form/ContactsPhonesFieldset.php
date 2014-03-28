@@ -37,7 +37,7 @@ class ContactsPhonesFieldset extends Fieldset implements InputFilterProviderInte
 
         return array(
             "phoneNumber" => array(
-                "required" => true,
+                "required" => false,
                 "filters" => array(
                     array("name" => "StripTags"),
                     array("name" => "StringTrim"),

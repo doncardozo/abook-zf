@@ -84,6 +84,8 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                 "count" => 1,
                 "should_create_template" => true,
                 "allow_add" => true,
+                "allow_remove" => true,
+                "create_new_objects" => true,
                 "target_element" => array(
                     "type" => "Abook\Form\ContactsEmailsFieldset",
                 ),
