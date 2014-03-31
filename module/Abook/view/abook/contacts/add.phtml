@@ -19,10 +19,7 @@
                     <?php echo $this->formCollection($contacts->get("emails")); ?>
                 </div>                
             </li>                
-            <li>
-                <a id="add-email" class="btn btn-primary">Add a new Email</a>
-                <a id="rem-email" class="btn btn-primary">Remove Email</a>
-            </li>
+            <li><a id="add-email" class="btn btn-primary">Add a new Email</a></li>
             <li>
                 <div id="phone-wrapper">
                     <?php echo $this->formCollection($contacts->get("phones")); ?>
@@ -48,28 +45,37 @@
     $(function() {
 
         $(document).on("click", "#add-email, #add-phone", function() {
-            var btn = $(this).attr("id");               
+            var btn = $(this).attr("id");
             insert(btn);
         });
-        
-        function insert(btn){
-            
-            switch(btn){
+
+        function insert(btn) {
+
+            switch (btn) {
                 case 'add-email' :
-                    var wrapper = "#email-wrapper";                    
+                    var wrapper = "#email-wrapper";
                     break;
                 case 'add-phone' :
                     var wrapper = "#phone-wrapper";
                     break;
             }
-            
+
             var currentCount = $(wrapper + " > fieldset > .form-control").length;
             var template = $(wrapper + " > fieldset > span").data("template");
             template = template.replace(/__index__/g, currentCount);
-            $(wrapper +" > fieldset").append(template);
+            $(wrapper + " > fieldset").append(template);
             return false;
         }
-        
+
+        $(document).on("click", "#rem", function() {
+
+            $(this).prev().prev().attr("data-delete", "on");
+            $(this).prev().attr("data-delete", "on");
+            $(this).attr("data-delete", "on");
+
+            $("*[data-delete='on']").remove();
+        });
+
     });
 
 </script>

@@ -72,7 +72,7 @@ SQL;
 
         $result = $this->getConnection()->execute($select);
         $statement = $result->getResource();
-        
+
         $resultSet = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $contacts["contacts"] = (sizeof($resultSet) > 0) ? array_pop($resultSet) : array();
 
@@ -141,21 +141,25 @@ SQL;
 
             $id = $contactsTable->getLastInsertValue();
 
-            $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
-            $arrayPrototype = array(
-                "id" => "id",
-                "field_name" => "email",
-                "method_name" => "getEmail"
-            );
-            $this->insertEP($emailsTable, $emailData, $arrayPrototype, $id);
+            if (is_array($emailData) && sizeof($emailData) > 0) {
+                $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
+                $arrayPrototype = array(
+                    "id" => "id",
+                    "field_name" => "email",
+                    "method_name" => "getEmail"
+                );
+                $this->insertEP($emailsTable, $emailData, $arrayPrototype, $id);
+            }
 
-            $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
-            $arrayPrototype = array(
-                "id" => "id",
-                "field_name" => "phone_number",
-                "method_name" => "getPhoneNumber"
-            );
-            $this->insertEP($phonesTable, $phoneData, $arrayPrototype, $id);
+            if (is_array($phoneData) && sizeof($phoneData) > 0) {
+                $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
+                $arrayPrototype = array(
+                    "id" => "id",
+                    "field_name" => "phone_number",
+                    "method_name" => "getPhoneNumber"
+                );
+                $this->insertEP($phonesTable, $phoneData, $arrayPrototype, $id);
+            }
 
             $connection->commit();
         } catch (Exception $ex) {
@@ -183,7 +187,7 @@ SQL;
         $current = $this->fetchById($contact->getId());
         # Set emails and phones into contacts entity
         $contactInDB = new \Abook\Entity\Contacts();
-        $contactInDB->hydrate(array_pop($current));
+        $contactInDB->hydrate($current["contacts"]);
 
         # Create EPC object
         $epc = new EmailsPhonesControl();
@@ -200,52 +204,56 @@ SQL;
                 $contactsTable->update($data, array("id" => $contact->getId()));
 
                 # Emails
-                $epc->setData($emailData, $contactInDB->getEmails());
-                #\Zend\Debug\Debug::dump($epc->getArray());
-                #exit;
-                $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
+                if (is_array($emailData) && sizeof($emailData) > 0) {
 
-                $arrayPrototype = array(
-                    "id" => "id",
-                    "field_name" => "email",
-                    "method_name" => "getEmail"
-                );
+                    $epc->setData($emailData, $contactInDB->getEmails());
 
-                if (sizeof($epc->getToInsert()) > 0) {
-                    $this->insertEP($emailsTable, $emailData, $arrayPrototype, $contact->getId());
-                }
+                    $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
 
-                if (sizeof($epc->getToUpdate()) > 0) {
-                    $this->updateEP($emailsTable, $emailData, $epc->getToUpdate(), $arrayPrototype, $contact->getId());
-                }
+                    $arrayPrototype = array(
+                        "id" => "id",
+                        "field_name" => "email",
+                        "method_name" => "getEmail"
+                    );
 
-                if (sizeof($epc->getToDelete()) > 0) {
-                    $this->deleteEP($emailsTable, $emailData, $epc->getToUpdate(), $contact->getId());
+                    if (sizeof($epc->getToInsert()) > 0) {
+                        $this->insertEP($emailsTable, $epc->getToInsert(), $arrayPrototype, $contact->getId());
+                    }
+
+                    if (sizeof($epc->getToUpdate()) > 0) {
+                        $this->updateEP($emailsTable, $epc->getToUpdate(), $arrayPrototype, $contact->getId());
+                    }
+
+                    if (sizeof($epc->getToDelete()) > 0) {
+                        $this->deleteEP($emailsTable, $epc->getToDelete(), $contact->getId());
+                    }
                 }
 
                 # Phones
-                $epc->setData($phoneData, $contactInDB->getPhones());
+                if (is_array($phoneData) && sizeof($phoneData) > 0) {
 
-                $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
+                    $epc->setData($phoneData, $contactInDB->getPhones());
 
-                $arrayPrototype = array(
-                    "id" => "id",
-                    "field_name" => "phone_number",
-                    "method_name" => "getPhoneNumber"
-                );
+                    $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
 
-                if (sizeof($epc->getToInsert()) > 0) {
-                    $this->insertEP($phonesTable, $phoneData, $arrayPrototype, $contact->getId());
+                    $arrayPrototype = array(
+                        "id" => "id",
+                        "field_name" => "phone_number",
+                        "method_name" => "getPhoneNumber"
+                    );
+
+                    if (sizeof($epc->getToInsert()) > 0) {
+                        $this->insertEP($phonesTable, $epc->getToInsert(), $arrayPrototype, $contact->getId());
+                    }
+
+                    if (sizeof($epc->getToUpdate()) > 0) {
+                        $this->updateEP($phonesTable, $epc->getToUpdate(), $arrayPrototype, $contact->getId());
+                    }
+
+                    if (sizeof($epc->getToDelete()) > 0) {
+                        $this->deleteEP($phonesTable, $epc->getToDelete(), $contact->getId());
+                    }
                 }
-
-                if (sizeof($epc->getToUpdate()) > 0) {
-                    $this->updateEP($phonesTable, $phoneData, $epc->getToUpdate(), $arrayPrototype, $contact->getId());
-                }
-
-                if (sizeof($epc->getToDelete()) > 0) {
-                    $this->deleteEP($phonesTable, $phoneData, $epc->getToUpdate(), $contact->getId());
-                }
-
 
                 $connection->commit();
             }
@@ -261,14 +269,12 @@ SQL;
      * @param array $arrayPrototype
      * @param type $contact_id
      */
-    private function insertEP(TableGateway $table, array $dataPost, array $arrayPrototype, $contact_id) {
+    private function insertEP(TableGateway $table, array $oInsert, array $arrayPrototype, $contact_id) {
         $data = array();
-        foreach ($dataPost as $obj) {
-            if ($obj->getId() == "") {
-                $data[$arrayPrototype["field_name"]] = $obj->{$arrayPrototype["method_name"]}();
-                $data["contact_id"] = $contact_id;
-                $table->insert($data);
-            }
+        foreach ($oInsert as $obj) {
+            $data[$arrayPrototype["field_name"]] = $obj->{$arrayPrototype["method_name"]}();
+            $data["contact_id"] = $contact_id;
+            $table->insert($data);
         }
     }
 
@@ -280,39 +286,29 @@ SQL;
      * @param array $arrayPrototype
      * @param type $contact_id
      */
-    private function updateEP(TableGateway $table, array $dataPost, array $epc, array $arrayPrototype, $contact_id) {
+    private function updateEP(TableGateway $table, array $oUpdate, array $arrayPrototype, $contact_id) {
 
         $data = array();
-
-        foreach ($dataPost as $dPost) {
-            foreach ($epc as $obj) {
-                if ($dPost->getId() == $obj->getId()) {
-                    # Update
-                    $data[$arrayPrototype["field_name"]] = $dPost->{$arrayPrototype["method_name"]}();
-                    $table->update($data, array(
-                        "id" => $dPost->getId(),
-                        "contact_id" => $contact_id
-                    ));
-                }
-            }
+        foreach ($oUpdate as $obj) {
+            # Update
+            $data[$arrayPrototype["field_name"]] = $obj->{$arrayPrototype["method_name"]}();
+            $table->update($data, array(
+                "id" => $obj->getId(),
+                "contact_id" => $contact_id
+            ));
         }
     }
-    
-    private function deleteEP(TableGateway $table, array $dataPost, array $epc, $contact_id) {
+
+    private function deleteEP(TableGateway $table, array $oDelete, $contact_id) {
 
         $data = array();
-
-        foreach ($dataPost as $dPost) {
-            foreach ($epc as $obj) {
-                if ($dPost->getId() == $obj->getId()) {
-                    # Update
-                    $data["deleted"] = 1;
-                    $table->update($data, array(
-                        "id" => $dPost->getId(),
-                        "contact_id" => $contact_id
-                    ));
-                }
-            }
+        foreach ($oDelete as $obj) {
+            # Delete
+            $data["deleted"] = 1;
+            $table->update($data, array(
+                "id" => $obj->getId(),
+                "contact_id" => $contact_id
+            ));
         }
     }
 
