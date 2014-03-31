@@ -35,47 +35,6 @@
 
 </section>
 
-<style type="text/css">
-    .ul-add li { list-style: none; margin-bottom: 10px; }    
-    input[type="text"] { width: 690px; }
-</style>
+<link href="<?php echo "/abook-zf/public/css/abook-style.css"; ?>" rel="stylesheet" type="text/css" />
 
-<script type="text/javascript">
-
-    $(function() {
-
-        $(document).on("click", "#add-email, #add-phone", function() {
-            var btn = $(this).attr("id");
-            insert(btn);
-        });
-
-        function insert(btn) {
-
-            switch (btn) {
-                case 'add-email' :
-                    var wrapper = "#email-wrapper";
-                    break;
-                case 'add-phone' :
-                    var wrapper = "#phone-wrapper";
-                    break;
-            }
-
-            var currentCount = $(wrapper + " > fieldset > .form-control").length;
-            var template = $(wrapper + " > fieldset > span").data("template");
-            template = template.replace(/__index__/g, currentCount);
-            $(wrapper + " > fieldset").append(template);
-            return false;
-        }
-
-        $(document).on("click", "#rem", function() {
-
-            $(this).prev().prev().attr("data-delete", "on");            
-            $(this).prev().attr("data-delete", "on");            
-            $(this).attr("data-delete", "on");            
-            
-            $("*[data-delete='on']").remove();
-        });
-
-    });
-
-</script>
+<script type="text/javascript" src="/abook-zf/public/js/abook-javascript.js"></script>

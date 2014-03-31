@@ -31,8 +31,9 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
             ),
             "attributes" => array(
                 "class" => "form-control",
-                "style" => "margin-bottom: 10px;",
-                "data-delete" => "off" 
+                "style" => "margin-bottom: 5px;",
+                "data-delete" => "off",
+                "placeholder" => "New Email"
             )
         ));
         
@@ -44,7 +45,7 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
             ),
             "attributes" => array(
                 "class" => "btn btn-primary",
-                "style" => "margin-top: -77px; margin-left: 700px;",
+                "style" => "margin-top: -68px; margin-left: 700px;",
                 "id" => "rem",
                 "data-delete" => "off" 
             )            
