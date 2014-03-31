@@ -37,14 +37,14 @@ class ContactsForm extends Form {
                             ->get('contactType')
                             ->setOptions(array("value_options" => $this->getContactTypeValues()));
         
-        $this->add($contactType); 
+        $this->add($contactType);
         
         $inputFilter->add(array(
             "name" => "contactType",
             "required" => false
         ));
-        /* ContactType */
         
+        /* ContactType */        
         $this->add(array(
             "type" => "Zend\Form\Element\Csrf",
             "name" => "csrf"

@@ -71,9 +71,7 @@ class ContactsController extends AbstractActionController {
         $contactData = $this->getContactsModel()->fetchById($id);
         
         $contact = new Contacts();        
-        $contact->hydrate($contactData["contacts"]);                 
-        $contact->setEmails($contactData["emails"]);      
-        $contact->setPhones($contactData["phones"]);
+        $contact->hydrate($contactData["contacts"]);             
         
         $form = new ContactsForm("edit_contact", $this->getServiceLocator());
         

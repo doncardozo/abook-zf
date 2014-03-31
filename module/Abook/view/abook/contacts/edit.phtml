@@ -43,21 +43,43 @@
 <script type="text/javascript">
 
     $(function() {
-        $("#add-email").on("click", function() {
-            var currentCount = $("#email-wrapper > fieldset > .form-control").length;           
-            var template = $("#email-wrapper > fieldset > span").data("template");
-            template = template.replace(/__index__/g, currentCount);
-            $("#email-wrapper > fieldset").append(template);
-            return false;
+
+        $(document).on("click", "#add-email, #add-phone", function() {
+            var btn = $(this).attr("id");
+            insert(btn);
         });
-        
-        $("#add-phone").on("click", function() {
-            var currentCount = $("#phone-wrapper > fieldset > .form-control").length;           
-            var template = $("#phone-wrapper > fieldset > span").data("template");
+
+        function insert(btn) {
+
+            switch (btn) {
+                case 'add-email' :
+                    var wrapper = "#email-wrapper";
+                    break;
+                case 'add-phone' :
+                    var wrapper = "#phone-wrapper";
+                    break;
+            }
+
+            var currentCount = $(wrapper + " > fieldset > .form-control").length;
+            var template = $(wrapper + " > fieldset > span").data("template");
             template = template.replace(/__index__/g, currentCount);
-            $("#phone-wrapper > fieldset").append(template);
+            $(wrapper + " > fieldset").append(template);
             return false;
-        });        
+        }
+
+        $(document).on("click", "#rem", function() {
+
+            $(this).prev().prev().attr("data-delete", "on");            
+            $(this).prev().attr("data-delete", "on");            
+            $(this).attr("data-delete", "on");            
+            
+            $("*[data-delete='on']").remove();
+        });
+
+        /*$("form").on("submit", function() {
+            $("input[data-delete='on'],button[data-delete='on']").remove();            
+        });*/
+
     });
 
 </script>

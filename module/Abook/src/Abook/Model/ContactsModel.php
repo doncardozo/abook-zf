@@ -54,41 +54,35 @@ SQL;
                 contact_type_id contactType,
                 active
             from contacts            
-            where id = {$id};
+            where id = {$id} and deleted = 0;
             
             select 
                 id,
                 email
             from contacts_emails
-            where contact_id = {$id};
+            where contact_id = {$id} and deleted = 0;
             
             select 
                 id,
                 phone_number phoneNumber
             from contacts_phones
-            where contact_id = {$id};
+            where contact_id = {$id} and deleted = 0;
 SQL;
 
 
         $result = $this->getConnection()->execute($select);
         $statement = $result->getResource();
+        
+        $resultSet = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $contacts["contacts"] = (sizeof($resultSet) > 0) ? array_pop($resultSet) : array();
 
-        $resultSet1 = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        $resultSet1 = (sizeof($resultSet1) > 0) ? array_pop($resultSet1) : array();
+        $statement->nextRowset();
+        $resultSet = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $contacts["contacts"]["emails"] = (sizeof($resultSet) > 0) ? $resultSet : array();
 
-        if ($statement->nextRowSet()) {
-            $resultSet2 = $statement->fetchAll(\PDO::FETCH_ASSOC);
-            $resultSet2 = (sizeof($resultSet2) > 0) ? $resultSet2 : array();
-        }
-
-        if ($statement->nextRowSet()) {
-            $resultSet3 = $statement->fetchAll(\PDO::FETCH_ASSOC);
-            $resultSet3 = (sizeof($resultSet3) > 0) ? $resultSet3 : array();
-        }
-
-        $contacts["contacts"] = $resultSet1;
-        $contacts["emails"] = $resultSet2;
-        $contacts["phones"] = $resultSet3;
+        $statement->nextRowset();
+        $resultSet = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $contacts["contacts"]["phones"] = (sizeof($resultSet) > 0) ? $resultSet : array();
 
         return $contacts;
     }
@@ -189,8 +183,7 @@ SQL;
         $current = $this->fetchById($contact->getId());
         # Set emails and phones into contacts entity
         $contactInDB = new \Abook\Entity\Contacts();
-        $contactInDB->setEmails($current["emails"]);
-        $contactInDB->setPhones($current["phones"]);
+        $contactInDB->hydrate(array_pop($current));
 
         # Create EPC object
         $epc = new EmailsPhonesControl();
@@ -208,7 +201,8 @@ SQL;
 
                 # Emails
                 $epc->setData($emailData, $contactInDB->getEmails());
-
+                #\Zend\Debug\Debug::dump($epc->getArray());
+                #exit;
                 $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
 
                 $arrayPrototype = array(
@@ -226,7 +220,7 @@ SQL;
                 }
 
                 if (sizeof($epc->getToDelete()) > 0) {
-                    
+                    $this->deleteEP($emailsTable, $emailData, $epc->getToUpdate(), $contact->getId());
                 }
 
                 # Phones
@@ -249,7 +243,7 @@ SQL;
                 }
 
                 if (sizeof($epc->getToDelete()) > 0) {
-                    
+                    $this->deleteEP($phonesTable, $phoneData, $epc->getToUpdate(), $contact->getId());
                 }
 
 
@@ -295,6 +289,24 @@ SQL;
                 if ($dPost->getId() == $obj->getId()) {
                     # Update
                     $data[$arrayPrototype["field_name"]] = $dPost->{$arrayPrototype["method_name"]}();
+                    $table->update($data, array(
+                        "id" => $dPost->getId(),
+                        "contact_id" => $contact_id
+                    ));
+                }
+            }
+        }
+    }
+    
+    private function deleteEP(TableGateway $table, array $dataPost, array $epc, $contact_id) {
+
+        $data = array();
+
+        foreach ($dataPost as $dPost) {
+            foreach ($epc as $obj) {
+                if ($dPost->getId() == $obj->getId()) {
+                    # Update
+                    $data["deleted"] = 1;
                     $table->update($data, array(
                         "id" => $dPost->getId(),
                         "contact_id" => $contact_id

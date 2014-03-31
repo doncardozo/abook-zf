@@ -1,7 +1,7 @@
 <div class="row">
     <fieldset>
         <legend>List contacts</legend>
-        
+
         <?php if (sizeof($contacts) == 0) : ?>
             <span>No found results.</span>
         <?php else : ?>
@@ -22,17 +22,17 @@
                 <tbody>
 
                     <?php foreach ($contacts as $contact) : ?>
-                    
-                    <tr>
-                        <td><a href="<?php echo $this->url('contact-edit', array("id"=>$contact->id)) ?>"><?php echo $contact->id; ?></a></td>
-                        <td><?php echo $contact->firstName; ?></td>
-                        <td><?php echo $contact->lastName; ?></td>
-                        <td><?php echo $contact->address; ?></td>
-                        <td><?php echo $contact->contactType; ?></td>
-                        <td><?php echo ($contact->active) ? "Yes" : "No"; ?></td>                        
-                    </tr>
-                    
-                    <?php endforeach; ?>                    
+
+                        <tr>
+                            <td><a href="<?php echo $this->url('contact-edit', array("id" => $contact->id)) ?>"><?php echo $contact->id; ?></a></td>
+                            <td><?php echo $contact->firstName; ?></td>
+                            <td><?php echo $contact->lastName; ?></td>
+                            <td><?php echo $contact->address; ?></td>
+                            <td><?php echo $contact->contactType; ?></td>
+                            <td><?php echo ($contact->active) ? "Yes" : "No"; ?></td>                        
+                        </tr>
+
+                    <?php endforeach; ?>                  
 
                 </tbody>
 
@@ -43,5 +43,5 @@
 </div>
 
 <style type="text/css">
-    
+
 </style>

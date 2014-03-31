@@ -19,7 +19,9 @@ class ContactsPhonesFieldset extends Fieldset implements InputFilterProviderInte
         $this->add(array(
             "name" => "id",
             "type" => "hidden",
-            "options" => array()
+            "attributes" => array(
+                "data-delete" => "off"
+            )
         ));
 
         $this->add(array(
@@ -29,9 +31,24 @@ class ContactsPhonesFieldset extends Fieldset implements InputFilterProviderInte
             ),
             "attributes" => array(
                 "class" => "form-control",
-                "style" => "margin-bottom: 10px;"
+                "style" => "margin-bottom: 10px;",
+                "data-delete" => "off"
             )
-        ));        
+        ));
+
+        $this->add(array(
+            "name" => "rem",
+            "type" => "button",
+            "options" => array(
+                "label" => "Remove"
+            ),
+            "attributes" => array(
+                "class" => "btn btn-primary",
+                "style" => "margin-top: -77px; margin-left: 700px;",
+                "id" => "rem",
+                "data-delete" => "off"
+            )
+        ));
     }
 
     public function getInputFilterSpecification() {
@@ -52,7 +69,7 @@ class ContactsPhonesFieldset extends Fieldset implements InputFilterProviderInte
                             "max" => 100,
                         ),
                     ),
-                )));
+        )));
     }
 
 }
