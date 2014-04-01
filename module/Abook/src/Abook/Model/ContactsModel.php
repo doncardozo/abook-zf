@@ -257,7 +257,25 @@ SQL;
 
                 $connection->commit();
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
+            $connection->rollback();
+        }
+    }
+
+    public function delete(\Abook\Entity\Contacts $contact) {
+
+        $connection = $this->getConnection()->beginTransaction();
+
+        try {
+            $contactTable = new TableGateway("contacts", $this->getDbAdapter());
+            $contactTable->update(
+                    array("deleted" => 1), 
+                    array("id" => $contact->getId())
+            );
+            
+            $connection->commit();
+            
+        } catch (\Exception $ex) {
             $connection->rollback();
         }
     }

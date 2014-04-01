@@ -16,6 +16,7 @@
                         <th>Address</th>
                         <th>Type</th>
                         <th>Active</th>                        
+                        <th style="width: 195px">action</th>                        
                     </tr>
                 </thead>
 
@@ -30,6 +31,10 @@
                             <td><?php echo $contact->address; ?></td>
                             <td><?php echo $contact->contactType; ?></td>
                             <td><?php echo ($contact->active) ? "Yes" : "No"; ?></td>                        
+                            <td>
+                                <a class="btn btn-primary" id="edit" href="<?php echo $this->url('contact-edit', array("id" => $contact->id)) ?>">Edit</a>
+                                <a class="btn btn-primary" id="delete" href="<?php echo $this->url('contact-delete', array("id" => $contact->id)) ?>">Delete</a>
+                            </td>                        
                         </tr>
 
                     <?php endforeach; ?>                  
@@ -43,5 +48,9 @@
 </div>
 
 <style type="text/css">
-
+    a.btn.btn-primary {
+        padding-bottom:0px; 
+        padding-top: 0px;
+        width: 90px;
+    }
 </style>

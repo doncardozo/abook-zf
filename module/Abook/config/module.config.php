@@ -83,7 +83,7 @@ return array(
             'contact-delete' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/contact/del',
+                    'route' => '/contact/del[/:id]',
                     'constraints' => $constraints,
                     'defaults' => array(
                         'controller' => "$nsController\Contacts",

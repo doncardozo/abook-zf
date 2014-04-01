@@ -19,12 +19,29 @@ class ContactsController extends AbstractActionController {
         ));
     }
 
+    public function deleteAction() {
+
+        $id = (int) $this->params("id");
+
+        if(!is_null($id)){
+            $contactData = $this->getContactsModel()->fetchById($id);
+
+            $contact = new Contacts();
+            $contact->hydrate($contactData["contacts"]);
+            
+            $this->getContactsModel()->delete($contact);
+            
+        }
+        
+        $this->redirect()->toRoute("contact-list");
+    }
+
     private function createAddForm() {
-        
+
         $form = new ContactsForm("add_contact", $this->getServiceLocator());
-        
+
         $form->get("contactType")->setValue(1);
-        
+
         $form->add(array(
             'name' => 'submit',
             'attributes' => array(
@@ -48,7 +65,7 @@ class ContactsController extends AbstractActionController {
 
             $form->setData($request->getPost());
 
-            if ($form->isValid()) {                              
+            if ($form->isValid()) {
                 $this->getContactsModel()->create($form->getData());
                 $this->redirect()->toRoute("contact-list");
             }
@@ -69,14 +86,14 @@ class ContactsController extends AbstractActionController {
     private function createEditForm($id) {
 
         $contactData = $this->getContactsModel()->fetchById($id);
-        
-        $contact = new Contacts();        
-        $contact->hydrate($contactData["contacts"]);             
-        
+
+        $contact = new Contacts();
+        $contact->hydrate($contactData["contacts"]);
+
         $form = new ContactsForm("edit_contact", $this->getServiceLocator());
-        
-        $form->bind($contact);        
-        
+
+        $form->bind($contact);
+
         $form->add(array(
             'name' => 'submit',
             'attributes' => array(
