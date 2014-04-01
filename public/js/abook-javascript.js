@@ -6,38 +6,51 @@
 
 $(function() {
 
-        $(document).on("click", "#add-email, #add-phone", function() {
-            var btn = $(this).attr("id");
-            insert(btn);
-        });
+    $(document).on("click", "#add-email, #add-phone", function() {
+        var btn = $(this).attr("id");
+        insert(btn);
+    });
 
-        function insert(btn) {
+    $(document).on("click", "#rem", function() {
+        
+        var wrapper = $(this).parent().parent().attr("id");
+        var count = countInput(wrapper);
 
-            switch (btn) {
-                case 'add-email' :
-                    var wrapper = "#email-wrapper";
-                    break;
-                case 'add-phone' :
-                    var wrapper = "#phone-wrapper";
-                    break;
-            }
+        if (count > 1) {
+            $(this).prev().prev().attr("data-delete", "on");
+            $(this).prev().attr("data-delete", "on");
+            $(this).attr("data-delete", "on");
+            $("*[data-delete='on']").remove();
+        }
+        else {
+            $(this).prev().val("");
+        }
+    });
+    
+    function countInput(wrapper){
+        var count = $("#" + wrapper + " > fieldset > .form-control").length;
+        return count;
+    }
+    
+    function insert(btn) {
 
-            var currentCount = $(wrapper + " > fieldset > .form-control").length;
-            var template = $(wrapper + " > fieldset > span").data("template");
-            template = template.replace(/__index__/g, currentCount);
-            $(wrapper + " > fieldset").append(template);
-            return false;
+        switch (btn) {
+            case 'add-email' :
+                var wrapper = "email-wrapper";
+                break;
+            case 'add-phone' :
+                var wrapper = "phone-wrapper";
+                break;
         }
 
-        $(document).on("click", "#rem", function() {
+        var currentCount = countInput(wrapper);
+        wrapper = "#"+wrapper;
+        var template = $(wrapper + " > fieldset > span").data("template");
+        template = template.replace(/__index__/g, currentCount);
+        $(wrapper + " > fieldset").append(template);
+        return false;
+    }
 
-            $(this).prev().prev().attr("data-delete", "on");            
-            $(this).prev().attr("data-delete", "on");            
-            $(this).attr("data-delete", "on");            
-            
-            $("*[data-delete='on']").remove();
-        });
-
-    });
+});
 
 

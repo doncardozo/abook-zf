@@ -206,7 +206,7 @@ SQL;
                 # Emails
                 if (is_array($emailData) && sizeof($emailData) > 0) {
 
-                    $epc->setData($emailData, $contactInDB->getEmails());
+                    $epc->setData($contactInDB->getEmails(), $emailData);
 
                     $emailsTable = new TableGateway("contacts_emails", $this->getDbAdapter());
 
@@ -232,7 +232,7 @@ SQL;
                 # Phones
                 if (is_array($phoneData) && sizeof($phoneData) > 0) {
 
-                    $epc->setData($phoneData, $contactInDB->getPhones());
+                    $epc->setData($contactInDB->getPhones(), $phoneData);
 
                     $phonesTable = new TableGateway("contacts_phones", $this->getDbAdapter());
 
