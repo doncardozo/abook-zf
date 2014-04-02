@@ -75,7 +75,7 @@ SQL;
 
         $resultSet = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $contacts["contacts"] = (sizeof($resultSet) > 0) ? array_pop($resultSet) : array();
-
+        
         $statement->nextRowset();
         $resultSet = $statement->fetchAll(\PDO::FETCH_ASSOC);
         $contacts["contacts"]["emails"] = (sizeof($resultSet) > 0) ? $resultSet : array();

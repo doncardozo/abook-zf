@@ -24,6 +24,7 @@ class ContactsController extends AbstractActionController {
         $id = (int) $this->params("id");
 
         if(!is_null($id)){
+            
             $contactData = $this->getContactsModel()->fetchById($id);
 
             $contact = new Contacts();
