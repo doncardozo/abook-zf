@@ -49,6 +49,21 @@
 </div>
 
 <!-- Modal Show -->
+<div class="modal" id="mPreload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Loading...</h4>
+            </div>
+            <div class="modal-body">
+                Please, wait a moment...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Show -->
 <div class="modal" id="mShow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -92,12 +107,14 @@
 
         $(document).on("click", "#show", function() {
             
+            $('#mPreload').modal('show');
             $.ajax({
                 type : "post",
                 url : $(this).attr("href")+"/"+$(this).data("idc"),
                 success : function(data){                    
                     $('#dataContact').html(data);
                     $('#mShow').modal('show'); 
+                    $('#mPreload').modal('hide');
                 }                
             });
             
