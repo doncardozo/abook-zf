@@ -72,8 +72,10 @@ return array(
             'contact-show' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/contact/show',
-                    'constraints' => $constraints,
+                    'route' => '/contact/show[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+'
+                    ),
                     'defaults' => array(
                         'controller' => "$nsController\Contacts",
                         'action' => "show"
@@ -84,7 +86,9 @@ return array(
                 'type' => 'Segment',
                 'options' => array(
                     'route' => '/contact/del[/:id]',
-                    'constraints' => $constraints,
+                    'constraints' => array(
+                        'id' => '[0-9]+'
+                    ),
                     'defaults' => array(
                         'controller' => "$nsController\Contacts",
                         'action' => "delete"

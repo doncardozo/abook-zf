@@ -1,1 +1,35 @@
+<?php if(!is_null($data["message"])) : ?>
+    <h3><?php echo $data["message"]; ?></h3>
+<?php else : ?>
+
+    <fieldset>
+        
+        <legend><?php echo $data["contacts"]["firstName"]. " " . $data["contacts"]["lastName"]; ?></legend>
+        <ul>
+            <li>First Name: <?php echo $data["contacts"]["firstName"]; ?></li>
+            <li>Last Name: <?php echo $data["contacts"]["lastName"]; ?></li>
+            <li>Address: <?php echo $data["contacts"]["address"]; ?></li>
+            <li>
+                Emails:
+                <ul>
+                    <?php foreach($data["contacts"]["emails"] as $list) : ?>                        
+                        <li><?php echo $list["email"]; ?></li>                        
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+            <li>
+                Phones:
+                <ul>
+                    <?php foreach($data["contacts"]["phones"] as $list) : ?>                        
+                        <li><?php echo $list["phoneNumber"]; ?></li>                        
+                    <?php endforeach; ?>
+                </ul>
+            </li>
+        </ul>
+        
+    </fieldset>
+    <style type="text/css">
+        ul li { list-style: none; }
+    </style>
+<?php endif; ?>
 

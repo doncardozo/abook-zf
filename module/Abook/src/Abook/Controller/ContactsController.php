@@ -147,8 +147,27 @@ class ContactsController extends AbstractActionController {
         );
     }
 
-    public function showAction() {
+    public function showAction() {      
         
+        $id = (int)$this->params("id");
+        
+        $contactData = $this->getContactsModel()->fetchById($id);
+
+        if (sizeof($contactData["contacts"]) == 0) {
+            $data = array(
+                "message" => "Contact not found"
+            );
+        }
+        else {
+            $data = array("contacts" => $contactData["contacts"]);
+        }
+
+        
+        
+        $viewModel = new ViewModel(array("data"=>$data));
+        $viewModel->setTemplate("abook/contacts/show");
+        $viewModel->setTerminal(true);
+        return $viewModel;        
     }
 
     private function getContactsModel() {
