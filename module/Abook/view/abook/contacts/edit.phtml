@@ -1,3 +1,7 @@
+<?php if(!is_null($message)) : ?>
+    <h3><?php echo $message; ?></h3>
+<?php else : ?>
+    
 <?php $form->prepare(); ?>
 <?php $contacts = $form->get("contacts"); ?>
 
@@ -38,3 +42,5 @@
 <link href="/css/abook-style.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript" src="/js/abook-javascript.js"></script>
+
+<?php endif; ?>

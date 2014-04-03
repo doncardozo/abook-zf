@@ -23,17 +23,18 @@ class ContactsController extends AbstractActionController {
 
         $id = (int) $this->params("id");
 
-        if(!is_null($id)){
-            
-            $contactData = $this->getContactsModel()->fetchById($id);
+        if (!is_null($id)) {
 
-            $contact = new Contacts();
-            $contact->hydrate($contactData["contacts"]);
+            $contactData = $this->getContactsModel()->fetchById($id);
             
-            $this->getContactsModel()->delete($contact);
+            if(sizeof($contactData["contacts"]) > 0){
+                $contact = new Contacts();
+                $contact->hydrate($contactData["contacts"]);
+                $this->getContactsModel()->delete($contact);   
+            }
             
         }
-        
+
         $this->redirect()->toRoute("contact-list");
     }
 
@@ -84,12 +85,7 @@ class ContactsController extends AbstractActionController {
         return array("form" => $addForm);
     }
 
-    private function createEditForm($id) {
-
-        $contactData = $this->getContactsModel()->fetchById($id);
-
-        $contact = new Contacts();
-        $contact->hydrate($contactData["contacts"]);
+    private function createEditForm(Contacts $contact) {
 
         $form = new ContactsForm("edit_contact", $this->getServiceLocator());
 
@@ -130,7 +126,18 @@ class ContactsController extends AbstractActionController {
 
         $id = (int) $this->params("id");
 
-        $editForm = $this->createEditForm($id);
+        $contactData = $this->getContactsModel()->fetchById($id);
+
+        if (sizeof($contactData["contacts"]) == 0) {
+            return array(
+                "message" => "Contact not found"
+            );
+        }
+
+        $contact = new Contacts();
+        $contact->hydrate($contactData["contacts"]);
+        
+        $editForm = $this->createEditForm($contact);
 
         $editForm = $this->updateAction($editForm);
 

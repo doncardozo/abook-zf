@@ -23,11 +23,11 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
                 "data-delete" => "off"
             )
         ));
-        
+
         $this->add(array(
             "name" => "email",
             "options" => array(
-                "label" => "",                               
+                "label" => "",
             ),
             "attributes" => array(
                 "class" => "form-control",
@@ -36,7 +36,7 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
                 "placeholder" => "New Email"
             )
         ));
-        
+
         $this->add(array(
             "name" => "rem",
             "type" => "button",
@@ -47,8 +47,8 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
                 "class" => "btn btn-primary",
                 "style" => "margin-top: -68px; margin-left: 700px;",
                 "id" => "rem",
-                "data-delete" => "off" 
-            )            
+                "data-delete" => "off"
+            )
         ));
     }
 
@@ -56,21 +56,15 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
 
         return array(
             "email" => array(
-                "required" => false,
+                "required" => true,
                 "filters" => array(
                     array("name" => "StripTags"),
                     array("name" => "StringTrim"),
                 ),
                 "validators" => array(
-                    array(
-                        "name" => "StringLength",
-                        "options" => array(
-                            "encoding" => "UTF-8",
-                            "min" => 4,
-                            "max" => 100,
-                        ),
-                    ),
-        )));
+                    new \Zend\Validator\EmailAddress()
+                )
+        ));
     }
 
 }
