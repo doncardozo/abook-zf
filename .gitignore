@@ -10,6 +10,4 @@ nbproject
 .settings
 composer.lock
 vendor/bin/*
-config/*
-files_project/*
 

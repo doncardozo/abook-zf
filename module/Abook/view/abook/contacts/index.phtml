@@ -16,7 +16,7 @@
                         <th>Address</th>
                         <th>Type</th>
                         <th>Active</th>                        
-                        <th style="width: 70px;">action</th>                        
+                        <th style="width:120px">action</th>                       
                     </tr>
                 </thead>
 
@@ -47,6 +47,13 @@
         <?php endif; ?>
     </fieldset>
 </div>
+
+<style type="text/css">
+    tbody tr td a.glyphicon {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+</style>
 
 <!-- Modal Show -->
 <div class="modal" id="mPreload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -93,8 +100,8 @@
                 Do you wish delete contact "<span id="nameContact"></span>"?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <button type="button" id="yes" data-url="" class="btn btn-primary">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                <button type="button" id="yes" data-url="" class="btn btn-default">Yes</button>
             </div>
         </div>
     </div>

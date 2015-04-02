@@ -12,7 +12,7 @@ class EmailsPhonesControl {
 
     public function setData(array $current, array $new) {
         $this->set("curr", $current);
-        $this->set("new", $new);
+        $this->set("new", $new);        
         $this->setToInsert();
         $this->setToUpdate();
         $this->setToDelete();
@@ -28,8 +28,13 @@ class EmailsPhonesControl {
 
     private function set($key, $data) {
         $this->{$key} = array();
-        foreach ($data as $obj) {
-            $this->{$key}[$obj->getId()] = $obj;
+        foreach ($data as $obj) {            
+            if($obj->getId() != ''){
+                $this->{$key}[$obj->getId()] = $obj;
+            }
+            else {
+                array_push($this->{$key}, $obj);
+            }                        
         }
     }
 
