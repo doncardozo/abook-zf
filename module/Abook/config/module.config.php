@@ -1,7 +1,7 @@
 <?php
 
 $Module = "Abook";
-$nsController = "$Module\Controller";
+$nsController = "{$Module}\Controller";
 $folderView = "abook";
 $constraints = array(
     'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
