@@ -30,8 +30,7 @@ class ContactsPhonesFieldset extends Fieldset implements InputFilterProviderInte
                 "label" => ""
             ),
             "attributes" => array(
-                "class" => "form-control",
-                "style" => "margin-bottom: 5px;",
+                "class" => "form-control",                
                 "data-delete" => "off",
                 "placeholder" => "New Phone"
             )
@@ -44,8 +43,7 @@ class ContactsPhonesFieldset extends Fieldset implements InputFilterProviderInte
                 "label" => "Remove"
             ),
             "attributes" => array(
-                "class" => "btn btn-primary",
-                "style" => "margin-top: -68px; margin-left: 700px;",
+                "class" => "btn btn-primary",               
                 "id" => "rem",
                 "data-delete" => "off"
             )

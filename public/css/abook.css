@@ -9,7 +9,23 @@ and open the template in the editor.
 */
 
 .ul-add li { list-style: none; margin-bottom: 10px; }   
-select#contactType, input.form-control { width:690px }
-#email-wrapper, #phone-wrapper fieldset { margin-bottom: -15px; }
-div#phone-wrapper fieldset fieldset { margin-bottom: 0px; }
+select#contactType, input.form-control { width:603px }
 input[type="checkbox"].form-control { width: 14px; }
+/*#add-email, #add-phone { margin-top: 0px } */
+div#email-wrapper fieldset fieldset { position:relative }
+div#email-wrapper fieldset fieldset button#rem.btn.btn-primary {
+    position:absolute;
+    right:0px;
+    top:0px;
+    margin-top: 0px;
+}
+div#phone-wrapper fieldset fieldset { position:relative }
+div#phone-wrapper fieldset fieldset button#rem.btn.btn-primary {
+    position:absolute;
+    right:0px;
+    top:0px;
+    margin-top: 0px;
+}
+div#phone-wrapper fieldset fieldset { margin-bottom: -10px; }
+div#email-wrapper input[type="text"].form-control { margin-bottom: 10px}
+div#phone-wrapper input[type="text"].form-control { margin-bottom: 20px}
