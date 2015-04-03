@@ -13,22 +13,22 @@ $(function() {
 
     $(document).on("click", "#rem", function() {
         
-        var wrapper = $(this).parent().parent().attr("id");
+        var wrapper = $(this).parent().parent().parent().attr("id");
         var count = countInput(wrapper);
 
-        if (count > 1) {
+        if (count > 1) {            
+            //$(this).parent().css({"display":"none"});
+            $(this).parent().attr("data-delete", "on");
             $(this).prev().prev().attr("data-delete", "on");
             $(this).prev().attr("data-delete", "on");
-            $(this).attr("data-delete", "on");
+            $(this).attr("data-delete", "on");         
             $("*[data-delete='on']").remove();
         }
-        else {
-            $(this).prev().val("");
-        }
+        
     });
     
     function countInput(wrapper){
-        var count = $("#" + wrapper + " > fieldset > .form-control").length;
+        var count = $("#" + wrapper + " > fieldset > fieldset > .form-control").length;
         return count;
     }
     
