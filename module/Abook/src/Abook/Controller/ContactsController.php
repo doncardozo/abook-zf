@@ -111,7 +111,8 @@ class ContactsController extends AbstractActionController {
         if ($request->isPost()) {
 
             $form->setData($request->getPost());
-
+            $form->setBindOnValidate(true);    
+            
             if ($form->isValid()) {
                 $contact = $form->getData();
                 $this->getContactsModel()->update($contact);
