@@ -105,16 +105,16 @@ class ContactsController extends AbstractActionController {
     }
 
     public function updateAction(ContactsForm $form) {
-
+        
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-
-            $form->setData($request->getPost());
+                        
             $form->setBindOnValidate(true);    
+            $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                $contact = $form->getData();
+                $contact = $form->getData();   
                 $this->getContactsModel()->update($contact);
                 $this->redirect()->toRoute("contact-list");
             }
