@@ -27,8 +27,7 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
         $this->add(array(
             "name" => "email",
             "options" => array(
-                "label" => "",
-                'messages' => array(\Zend\Validator\EmailAddress::INVALID_FORMAT => 'Email address format is invalid')
+                "label" => ""
             ),
             "attributes" => array(
                 "class" => "form-control",
