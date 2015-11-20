@@ -45,10 +45,10 @@ class ContactsForm extends Form {
         ));
         
         /* ContactType */        
-        $this->add(array(
+        /*$this->add(array(
             "type" => "Zend\Form\Element\Csrf",
             "name" => "csrf"
-        ));
+        ));*/
     }
     
     public function getContactTypeValues(){

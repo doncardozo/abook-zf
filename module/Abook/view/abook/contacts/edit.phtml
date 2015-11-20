@@ -5,11 +5,12 @@
 <?php $form->prepare(); ?>
 <?php $contacts = $form->get("contacts"); ?>
 
-<?php $form->setAttribute("action", $this->url("contact-edit", array("action" => "edit", "id" => $id))); ?>
+<?php $form->setAttribute("action", $this->url("contact-update", array("action" => "update"))); ?>
 
 <section class="col col-lg-8">    
     <?php echo $this->form()->openTag($form); ?>
-    <?php #\Zend\Debug\Debug::dump($contacts); ?>
+    <?php #\Zend\Debug\Debug::dump($form); ?>    
+      
     <fieldset>
         <legend>Edit</legend>
         <ul class="ul-add">
@@ -33,7 +34,7 @@
             <li><?php echo $this->formSubmit($form->get("submit")); ?></li>
         </ul>
         <?php echo $this->formHidden($contacts->get("id")); ?>
-        <?php echo $this->formHidden($form->get("csrf")); ?>
+        <?php //echo $this->formHidden($form->get("csrf")); ?>
     </fieldset>
     <?php echo $this->form()->closeTag(); ?>
 

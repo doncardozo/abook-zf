@@ -27,23 +27,24 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
         $this->add(array(
             "name" => "email",
             "options" => array(
-                "label" => "",
+                "label" => ""
             ),
             "attributes" => array(
-                "class" => "form-control",                
+                "class" => "form-control",
                 "data-delete" => "off",
-                "placeholder" => "New Email"
-            )
+                "placeholder" => "New Email",
+                "required" => "required"
+            ),
         ));
 
         $this->add(array(
             "name" => "rem",
             "type" => "button",
-            "options" => array(
+            "options" => array(                
                 "label" => "Remove"
             ),
             "attributes" => array(
-                "class" => "btn btn-primary",                
+                "class" => "btn btn-primary",
                 "id" => "rem",
                 "data-delete" => "off"
             )
@@ -53,16 +54,16 @@ class ContactsEmailsFieldset extends Fieldset implements InputFilterProviderInte
     public function getInputFilterSpecification() {
 
         return array(
-            "email" => array(
-                "required" => true,
-                "filters" => array(
-                    array("name" => "StripTags"),
-                    array("name" => "StringTrim"),
+            'email' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'Zend\Filter\StringTrim'),
                 ),
-                "validators" => array(
-                    new \Zend\Validator\EmailAddress()
-                )
-        ));
+                'validators' => array(
+                    new \Zend\Validator\EmailAddress(),
+                ),
+            ),
+        );
     }
 
 }
