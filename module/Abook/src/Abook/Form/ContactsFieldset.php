@@ -29,7 +29,8 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                 "label" => "First Name"
             ),
             "attributes" => array(
-                "class" => "form-control"
+                "class" => "form-control",
+                "required" => "required"
             )
         ));
 
@@ -39,7 +40,8 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                 "label" => "Last Name"
             ),
             "attributes" => array(
-                "class" => "form-control"
+                "class" => "form-control",
+                "required" => "required"
             )
         ));
 
@@ -49,7 +51,8 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                 "label" => "Address"
             ),
             "attributes" => array(
-                "class" => "form-control"
+                "class" => "form-control",
+                "required" => "required"
             )
         ));
 
@@ -60,7 +63,8 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
                 "label" => "Active"
             ),
             "attributes" => array(
-                "class" => "form-control"
+                "class" => "form-control",
+                "required" => "required"
             )
         ));
 
@@ -69,7 +73,7 @@ class ContactsFieldset extends Fieldset implements InputFilterProviderInterface 
             'type' => 'select',
             'attributes' => array(
                 'id' => 'contactType',
-                'class' => 'form-control'
+                'class' => 'form-control'                
             ),
             'options' => array(
                 'label' => 'Type'

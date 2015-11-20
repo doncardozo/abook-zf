@@ -104,19 +104,28 @@ class ContactsController extends AbstractActionController {
         return $form;
     }
 
-    public function updateAction(ContactsForm $form) {
+    public function updateAction() {
         
         $request = $this->getRequest();
-
-        if ($request->isPost()) {
-                        
-            $form->setBindOnValidate(true);    
-            $form->setData($request->getPost());
+        
+        $data = $request->getPost();
+        $arr_data = $data->offsetGet('contacts');
+        $contact = new Contacts();
+        $contact->hydrate($arr_data);
+        $form = $this->createEditForm($contact);
+                
+        if ($request->isPost()) {   
             
-            if ($form->isValid()) {
-                $contact = $form->getData();   
+            $form->setBindOnValidate(true);    
+            $form->setData($data);
+            
+            if ($form->isValid()) {                
+                $contact = $form->getData();
                 $this->getContactsModel()->update($contact);
                 $this->redirect()->toRoute("contact-list");
+            }
+            else {                 
+                $this->redirect()->toRoute("contact-edit", ['id'=>$arr_data['id']]);
             }
         }
 
@@ -140,8 +149,6 @@ class ContactsController extends AbstractActionController {
         
         $editForm = $this->createEditForm($contact);
 
-        $editForm = $this->updateAction($editForm);
-
         return array(
             "form" => $editForm,
             "id" => $id
@@ -163,8 +170,6 @@ class ContactsController extends AbstractActionController {
             $data = array("contacts" => $contactData["contacts"]);
         }
 
-        
-        
         $viewModel = new ViewModel(array("data"=>$data));
         $viewModel->setTemplate("abook/contacts/show");
         $viewModel->setTerminal(true);
